@@ -1,0 +1,6 @@
+server:
+  port: 8080
+netty:
+  socketio:
+    host: 127.0.0.1
+    port: 9500
