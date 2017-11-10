@@ -11,6 +11,7 @@ public class SocketioMahjongApplicationTests {
 
 	@Test
 	public void contextLoads() {
+
 	}
 
 }
