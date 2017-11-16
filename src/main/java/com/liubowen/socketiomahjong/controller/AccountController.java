@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 /**
  * @author liubowen
  * @date 2017/11/10 2:54
@@ -19,41 +21,41 @@ public class AccountController {
     private AccountService accountService;
 
     @GetMapping("/register")
-    public ResultEntity register(@RequestParam("account") String account,
+    public Map<String, Object> register(@RequestParam("account") String account,
                                  @RequestParam("password") String password) {
-        return this.accountService.register(account, password);
+        return this.accountService.register(account, password).result();
     }
 
     @GetMapping("/get_version")
-    public ResultEntity getVersion() {
-        return this.accountService.getVersion();
+    public Map<String, Object> getVersion() {
+        return this.accountService.getVersion().result();
     }
 
     @GetMapping("/get_serverinfo")
-    public ResultEntity getServerinfo() {
-        return this.accountService.getServerinfo();
+    public Map<String, Object> getServerinfo() {
+        return this.accountService.getServerinfo().result();
     }
 
     @GetMapping("/guest")
-    public ResultEntity guest(@RequestParam("account") String account) {
-        return this.accountService.guest(account);
+    public Map<String, Object> guest(@RequestParam("account") String account) {
+        return this.accountService.guest(account).result();
     }
 
     @GetMapping("/auth")
-    public ResultEntity auth(@RequestParam("account") String account,
+    public Map<String, Object> auth(@RequestParam("account") String account,
                                  @RequestParam("password") String password) {
-        return this.accountService.auth(account, password);
+        return this.accountService.auth(account, password).result();
     }
 
     @GetMapping("/wechat_auth")
-    public ResultEntity wechatAuth(@RequestParam("code") String code,
+    public Map<String, Object> wechatAuth(@RequestParam("code") String code,
                                  @RequestParam("os") String os) {
-        return this.accountService.wechatAuth(code, os);
+        return this.accountService.wechatAuth(code, os).result();
     }
 
     @GetMapping("/base_info")
-    public ResultEntity baseInfo(@RequestParam("userid") String userid) {
-        return this.accountService.baseInfo(userid);
+    public Map<String, Object> baseInfo(@RequestParam("userid") String userid) {
+        return this.accountService.baseInfo(userid).result();
     }
 
 }

@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 /**
  * @author liubowen
  * @date 2017/11/10 19:36
@@ -20,14 +22,14 @@ public class DealerApiController {
     private DealerApiService dealerApiService;
 
     @GetMapping("/get_user_info")
-    public ResultEntity getUserInfo(@RequestParam("userid") String userid) {
-        return ResultEntityUtil.ok();
+    public Map<String, Object> getUserInfo(@RequestParam("userid") String userid) {
+        return ResultEntityUtil.ok().result();
     }
 
     @GetMapping("/add_user_gems")
-    public ResultEntity addUserGems(@RequestParam("userid") String userid,
+    public Map<String, Object> addUserGems(@RequestParam("userid") String userid,
                                     @RequestParam("gems") String gems) {
-        return ResultEntityUtil.ok();
+        return ResultEntityUtil.ok().result();
     }
 
 }
