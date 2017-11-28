@@ -13,3 +13,5 @@ spring:
       username: root
       password: Wx@900921
       driver-class-name: com.mysql.jdbc.Driver
+#  main:
+#    banner-mode: "off"

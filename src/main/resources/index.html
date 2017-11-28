@@ -3,8 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <title>index</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.0.1/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap/3.0.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/bootstrap/3.0.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <script src="http://www.jq22.com/jquery/jquery-2.1.1.js"></script>
 </head>
 <body>
-    <h1>Hello world !</h1>
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <h1>SocketIo 测试</h1>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="form-inline col-md-12" style="padding: 0px;">
+                        <div class="control-group">
+                            <button id="connect" class="btn btn-primary">连接</button>
+                            <button id="disconnect" class="btn btn-danger">断开连接</button>
+                        </div>
+                        </br>
+                    </div>
+                </div>
+                <div class="panel-body" style="padding: 0px;">
+                    <div id="console"
+                         style="overflow-y:auto; height: 400px; background-color: antiquewhite; padding: 15px">
+                    </div>
+                </div>
+                <div class="panel-footer" style="background-color: darkgrey">
+                    <div class="form-inline col-md-12">
+                        <div class="control-group">
+                            <label class="control-label" for="register_account">account ： </label>
+                            <input id="register_account" type="text" placeholder="account" class="input">
+                            <label class="control-label" for="register_password">password ： </label>
+                            <input id="register_password" type="text" placeholder="password" class="input">
+                            <button id="register" class="btn btn-primary">注册</button>
+                        </div>
+                        </br>
+                        <div class="control-group">
+                            <label class="control-label" for="login_token">token ： </label>
+                            <input id="login_token" type="text" placeholder="token" class="input">
+                            <label class="control-label" for="login_roomId">roomId ： </label>
+                            <input id="login_roomId" type="text" placeholder="roomId" class="input">
+                            <label class="control-label" for="login_sign">sign ： </label>
+                            <input id="login_sign" type="text" placeholder="sign" class="input">
+                            <button id="login" class="btn btn-primary">登陆</button>
+                        </div>
+                        </br>
+                        <div class="control-group">
+                            <label class="control-label" for="ready_token">token ： </label>
+                            <input id="ready_token" type="text" placeholder="token" class="input">
+                            <button id="ready" class="btn btn-primary">准备</button>
+                        </div>
+                        </br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var socketIo;
+    const httpUrl = "http://127.0.0.1:9009/mahjong/";
+
+    $(function () {
+        $('#connect').click(() => {
+            connect();
+        });
+
+        $('#disconnect').click(() => {
+            disconnect();
+        });
+
+        $('#login').click(() => {
+            let LoginVo = {
+                token: $('#login_token').val(),
+                roomId: $('#login_roomId').val(),
+                time: new Date().getTime(),
+                sign: $('#login_sign').val()
+            }
+            socketIo.emit("login", LoginVo);
+        });
+
+        $('#ready').click(() => {
+            socketIo.emit("ready", {token: $('#ready_token').val()});
+        });
+
+        $('#register').click(() => {
+            let account = $('#register_account').val();
+            let password = $('#register_password').val();
+            let url = `${httpUrl}register?account=${account}&password=${password}`;
+            console.log(url);
+            $.get(url, (data) => {
+                print("【http】 register", JSON.stringify(data));
+            });
+        });
+
+//        $('#').click(() => {
+//          socketIo.emit("login", LoginVo);
+//        });
+    });
+
+    function connect() {
+        socketIo = io('http://127.0.0.1:10086');
+        socketIo.on('connect', () => {
+            print("server", "server connect success");
+        });
+        socketIo.on('disconnect', () => {
+            print("server", "server is disconnect");
+        });
+        socketIo.on('login_result', (data) => {
+            print("login_result", JSON.stringify(data));
+        });
+    }
+
+    function disconnect() {
+        socketIo.disconnect();
+        socketIo = null;
+    }
+
+    function print(user, msg) {
+        var time = new Date().Format("yyyy-MM-dd HH:mm:ss");
+        $('#console').append(`<font color='#a9a9a9'>[ ${time} ]</font><font color='gray'> ${user} </font> ： <font color='#20b2aa'> ${msg} </font></br>`);
+        var console = document.getElementById('console');
+        console.scrollTop = console.scrollHeight;
+    }
+
+    Date.prototype.Format = function (fmt) { //author: meizz
+        var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "H+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+</script>
 </body>
 </html>

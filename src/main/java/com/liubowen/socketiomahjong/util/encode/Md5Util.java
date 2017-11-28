@@ -1,6 +1,6 @@
 package com.liubowen.socketiomahjong.util.encode;
 
-import org.apache.tomcat.util.security.MD5Encoder;
+import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  * @author liubowen
@@ -10,6 +10,6 @@ import org.apache.tomcat.util.security.MD5Encoder;
 public class Md5Util {
 
     public static String MD5(String param) {
-        return MD5Encoder.encode(param.getBytes());
+        return DigestUtils.md5Hex(param);
     }
 }

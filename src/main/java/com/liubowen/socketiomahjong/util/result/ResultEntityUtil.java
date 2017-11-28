@@ -22,4 +22,9 @@ public class ResultEntityUtil {
         ResultEntity resultEntity = new ResultEntity(1, errmsg);
         return resultEntity;
     }
+
+    public static ResultEntity err(int errCode, String errmsg) {
+        ResultEntity resultEntity = new ResultEntity(errCode, errmsg);
+        return resultEntity;
+    }
 }

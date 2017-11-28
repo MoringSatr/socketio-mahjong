@@ -1,4 +1,4 @@
-package com.liubowen.socketiomahjong.handle;
+package com.liubowen.socketiomahjong.handler;
 
 import com.liubowen.socketiomahjong.session.Session;
 import lombok.extern.slf4j.Slf4j;
@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component;
 /**
  * @author liubowen
  * @date 2017/11/10 3:48
- * @description
+ * @description 游戏业务处理器
  */
 @Component
 @Slf4j
-public class GameHandle {
+public class GameBusinessHandler {
 
     /**
      * 准备
@@ -56,7 +56,7 @@ public class GameHandle {
     }
 
     /**
-     * 过  遇上胡，碰，杠的时候，可以选择过
+     * 过 遇上胡，碰，杠的时候，可以选择过
      */
     public void guo(Session session, Object data) {
     }
@@ -114,6 +114,5 @@ public class GameHandle {
      */
     public void dissolveReject(Session session, Object data) {
     }
-
 
 }

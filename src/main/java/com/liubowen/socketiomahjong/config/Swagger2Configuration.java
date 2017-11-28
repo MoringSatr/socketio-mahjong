@@ -26,8 +26,7 @@ public class Swagger2Configuration {
 
     private ApiInfo buildApiInf() {
         return new ApiInfoBuilder()
-                .title("security-login-check 接口文档")
-                .description("security-login-check 提供的接口描述文档")
+                .title("socketIo-mahjong    接口文档").description("socketIo-mahjong  提供的接口描述文档")
                 .build();
     }
 

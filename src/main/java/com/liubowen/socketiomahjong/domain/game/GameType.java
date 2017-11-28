@@ -16,7 +16,7 @@ public enum GameType {
 
     ;
 
-    private GameType(String type) {
+    GameType(String type) {
         this.type = type;
     }
 

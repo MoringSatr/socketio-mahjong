@@ -2,6 +2,7 @@ package com.liubowen.socketiomahjong.service.impl;
 
 import com.liubowen.socketiomahjong.common.ResultEntity;
 import com.liubowen.socketiomahjong.service.AccountService;
+import com.liubowen.socketiomahjong.util.result.ResultEntityUtil;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,7 +15,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public ResultEntity register(String account, String password) {
-        return null;
+        return ResultEntityUtil.ok();
     }
 
     @Override

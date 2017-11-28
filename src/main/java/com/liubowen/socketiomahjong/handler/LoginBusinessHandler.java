@@ -1,7 +1,7 @@
-package com.liubowen.socketiomahjong.handle;
+package com.liubowen.socketiomahjong.handler;
 
-import com.liubowen.socketiomahjong.common.ResultEntity;
 import com.liubowen.socketiomahjong.session.Session;
+import com.liubowen.socketiomahjong.util.result.ResultEntityUtil;
 import com.liubowen.socketiomahjong.vo.LoginVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -13,29 +13,28 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-public class LoginHandle {
+public class LoginBusinessHandler {
 
-    /**
-     * 登陆
-     */
+    /** 登陆 */
     public void login(Session session, LoginVo loginVo) {
-        if(session.isLogin()) {
-            //已经登陆过的就忽略
+        if (session.isLogin()) {
+            // 已经登陆过的就忽略
             return;
         }
-        //检查参数合法性
-        if(!loginVo.isLegal()) {
-            session.send("login_result", new ResultEntity(1, "invalid parameters").result());
+        // 检查参数合法性
+        if (!loginVo.isLegal()) {
+            session.send("login_result", ResultEntityUtil.err(1, "invalid parameters").result());
             return;
         }
-        //检查参数是否被篡改
-        if(!loginVo.isMd5()) {
-            session.send("login_result", new ResultEntity(2, "login failed. invalid sign!").result());
+        // 检查参数是否被篡改
+        if (!loginVo.isMd5()) {
+            session.send("login_result", ResultEntityUtil.err(2, "login failed. invalid sign!").result());
             return;
         }
 
     }
 
+    /** 退出 */
     public void logout(Session session) {
 
     }

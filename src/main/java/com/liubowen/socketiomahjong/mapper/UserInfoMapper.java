@@ -1,6 +1,6 @@
 package com.liubowen.socketiomahjong.mapper;
 
-import com.liubowen.socketiomahjong.config.MyMapper;
+import com.liubowen.socketiomahjong.common.MyMapper;
 import com.liubowen.socketiomahjong.entity.UserInfo;
 import org.apache.ibatis.annotations.Mapper;
 

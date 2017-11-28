@@ -17,7 +17,7 @@ import java.util.Properties;
 /**
  * @author liubowen
  * @date 2017/11/9 21:07
- * @description
+ * @description MyBatis 配置
  */
 @Component
 public class MyBatisConfig {
