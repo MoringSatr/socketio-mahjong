@@ -1,6 +1,5 @@
 package com.liubowen.socketiomahjong.controller;
 
-import com.liubowen.socketiomahjong.common.ResultEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,10 +18,9 @@ public class RoomController {
     @GetMapping("/register_gs")
     public Map<String, Object> registerGs(@RequestParam("account") String account,
                                           @RequestParam("clientip") String clientip,
-                                          @RequestParam("clientport") String clientport,
-                                          @RequestParam("httpPort") String httpPort,
+            @RequestParam("clientport") int clientport, @RequestParam("httpPort") int httpPort,
                                           @RequestParam("load") String load,
-                                          @RequestParam("id") String id) {
+            @RequestParam("id") int id) {
         return null;
     }
 }

@@ -2,6 +2,8 @@ package com.liubowen.socketiomahjong.service;
 
 import com.liubowen.socketiomahjong.common.ResultEntity;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author liubowen
  * @date 2017/11/10 2:53
@@ -15,12 +17,12 @@ public interface AccountService {
 
     ResultEntity getServerinfo();
 
-    ResultEntity guest(String account);
+    ResultEntity guest(String account, HttpServletRequest request);
 
-    ResultEntity auth(String account, String password);
+    ResultEntity auth(String account, String password, HttpServletRequest request);
 
-    ResultEntity wechatAuth(String code, String os);
+    ResultEntity wechatAuth(String code, String os, HttpServletRequest request);
 
-    ResultEntity baseInfo(String userid);
+    ResultEntity baseInfo(long userid);
 
 }

@@ -2,6 +2,8 @@ package com.liubowen.socketiomahjong.service;
 
 import com.liubowen.socketiomahjong.common.ResultEntity;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author liubowen
  * @date 2017/11/10 20:16
@@ -9,23 +11,23 @@ import com.liubowen.socketiomahjong.common.ResultEntity;
  */
 public interface ClientService {
 
-    ResultEntity login(String account, String sign);
+    ResultEntity login(String account, String sign, HttpServletRequest request);
 
-    ResultEntity createUser(String account, String sign, String name);
+    ResultEntity createUser(String account, String sign, String name, HttpServletRequest request);
 
-    ResultEntity createPrivateRoom(String account, String sign, String userid, String name);
+    ResultEntity createPrivateRoom(String account, String sign, long userId, String name, HttpServletRequest request);
 
-    ResultEntity enterPrivateRoom(String roomid, String account, String userid, String name);
+    ResultEntity enterPrivateRoom(String roomId, String account, long userId, String name, HttpServletRequest request);
 
-    ResultEntity getHistoryList(String account, String sign, String userid);
+    ResultEntity getHistoryList(String account, String sign, long userId, HttpServletRequest request);
 
-    ResultEntity getGamesOfRoom(String uuid);
+    ResultEntity getGamesOfRoom(String uuid, HttpServletRequest request);
 
-    ResultEntity getDetailOfGame(String account, String sign, String uuid, String index);
+    ResultEntity getDetailOfGame(String account, String sign, String uuid, int index, HttpServletRequest request);
 
-    ResultEntity getUserStatus(String account, String sign);
+    ResultEntity getUserStatus(String account, String sign, HttpServletRequest request);
 
-    ResultEntity getMessage(String account, String sign, String type, String version);
+    ResultEntity getMessage(String account, String sign, String type, String version, HttpServletRequest request);
 
-    ResultEntity isServerOnline(String account, String sign, String ip, String port);
+    ResultEntity isServerOnline(String account, String sign, String ip, int port, HttpServletRequest request);
 }

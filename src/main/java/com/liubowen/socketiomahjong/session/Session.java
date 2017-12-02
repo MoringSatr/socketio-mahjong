@@ -1,6 +1,7 @@
 package com.liubowen.socketiomahjong.session;
 
 import com.corundumstudio.socketio.SocketIOClient;
+import io.netty.util.AttributeKey;
 import lombok.ToString;
 
 /**
@@ -11,7 +12,7 @@ import lombok.ToString;
 @ToString
 public class Session {
 
-    private static final String sessionKey = "SESSION";
+    private static final AttributeKey<Session> SESSION_KEY = AttributeKey.valueOf("SESSION");
 
     /** 玩家客户端连接 */
     private SocketIOClient client;
@@ -23,7 +24,7 @@ public class Session {
     }
 
     public static Session get(SocketIOClient client) {
-        Session session = client.get(sessionKey);
+        Session session = client.get(SESSION_KEY.name());
         if(session == null) {
             session = new Session();
             session.bind(client);
@@ -36,10 +37,7 @@ public class Session {
         this.userId = userId;
     }
 
-    /** 绑定玩家session */
-    private void bind(SocketIOClient client) {
-        this.client = client;
-        client.set(sessionKey, this);
+    public static void main(String[] args) throws Exception {
     }
 
     /** 获取玩家sessionId */
@@ -69,6 +67,12 @@ public class Session {
     public void sendAndClose(String event, Object... message) {
         this.send(event, message);
         this.client.disconnect();
+    }
+
+    /** 绑定玩家session */
+    private void bind(SocketIOClient client) {
+        this.client = client;
+        client.set(SESSION_KEY.name(), this);
     }
 
 }

@@ -1,6 +1,6 @@
 package com.liubowen.socketiomahjong.vo;
 
-import com.liubowen.socketiomahjong.common.Constant;
+import com.liubowen.socketiomahjong.constant.Constant;
 import com.liubowen.socketiomahjong.util.encode.Md5Util;
 import lombok.Data;
 

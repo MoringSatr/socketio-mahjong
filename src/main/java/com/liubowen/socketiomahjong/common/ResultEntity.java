@@ -51,7 +51,7 @@ public class ResultEntity {
         this.sendErr = true;
     }
 
-    public void addAll(String key, Object value) {
+    public void add(String key, Object value) {
         this.params.put(key, value);
     }
 

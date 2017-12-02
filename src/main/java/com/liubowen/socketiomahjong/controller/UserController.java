@@ -25,7 +25,7 @@ public class UserController {
     @ApiImplicitParam(name = "userInfo", value = "用户详细实体user", required = true, dataType = "UserInfo")
     @RequestMapping(value = "", method = RequestMethod.POST)
     public String postUser(@RequestBody UserInfo userInfo) {
-        users.put(userInfo.getUserid(), userInfo);
+        users.put(userInfo.getUserId(), userInfo);
         return "success";
     }
 

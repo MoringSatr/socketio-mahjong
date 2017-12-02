@@ -1,12 +1,12 @@
 package com.liubowen.socketiomahjong.controller;
 
-import com.liubowen.socketiomahjong.common.ResultEntity;
 import com.liubowen.socketiomahjong.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -37,24 +37,24 @@ public class AccountController {
     }
 
     @GetMapping("/guest")
-    public Map<String, Object> guest(@RequestParam("account") String account) {
-        return this.accountService.guest(account).result();
+    public Map<String, Object> guest(@RequestParam("account") String account, HttpServletRequest request) {
+        return this.accountService.guest(account, request).result();
     }
 
     @GetMapping("/auth")
     public Map<String, Object> auth(@RequestParam("account") String account,
-                                 @RequestParam("password") String password) {
-        return this.accountService.auth(account, password).result();
+            @RequestParam("password") String password, HttpServletRequest request) {
+        return this.accountService.auth(account, password, request).result();
     }
 
     @GetMapping("/wechat_auth")
     public Map<String, Object> wechatAuth(@RequestParam("code") String code,
-                                 @RequestParam("os") String os) {
-        return this.accountService.wechatAuth(code, os).result();
+            @RequestParam("os") String os, HttpServletRequest request) {
+        return this.accountService.wechatAuth(code, os, request).result();
     }
 
     @GetMapping("/base_info")
-    public Map<String, Object> baseInfo(@RequestParam("userid") String userid) {
+    public Map<String, Object> baseInfo(@RequestParam("userid") long userid) {
         return this.accountService.baseInfo(userid).result();
     }
 

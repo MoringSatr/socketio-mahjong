@@ -9,7 +9,7 @@ import com.liubowen.socketiomahjong.common.ResultEntity;
  */
 public interface DealerApiService {
 
-    ResultEntity getUserInfo(String userid);
+    ResultEntity getUserInfo(long userId);
 
-    ResultEntity addUserGems(String userid, String gems);
+    ResultEntity addUserGems(long userId, int gems);
 }

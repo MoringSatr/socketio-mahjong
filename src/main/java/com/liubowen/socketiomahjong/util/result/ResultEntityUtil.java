@@ -14,8 +14,13 @@ public class ResultEntityUtil {
         return resultEntity;
     }
 
-    public static ResultEntity err() {
-        return err("unknow error");
+    public static ResultEntity empty() {
+        ResultEntity resultEntity = new ResultEntity();
+        return resultEntity;
+    }
+
+    public static ResultEntity unknowErr() {
+        return err(1, "unknow error.");
     }
 
     public static ResultEntity err(String errmsg) {

@@ -12,7 +12,7 @@ public class UserInfo {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "userid")
-    private Long userid;
+    private Long userId;
 
     /** 账号 */
     @Column(name = "account")
@@ -28,11 +28,11 @@ public class UserInfo {
 
     /** 用户头像 */
     @Column(name = "headimg")
-    private String headimg;
+    private String headImg;
 
     /** 用户等级 */
     @Column(name = "lv")
-    private Integer lv;
+    private Integer level;
 
     /** 用户经验 */
     @Column(name = "exp")
@@ -48,9 +48,21 @@ public class UserInfo {
 
     /** 房间id */
     @Column(name = "roomid")
-    private String roomid;
+    private String roomId;
 
     /** 用户历史记录 */
     @Column(name = "history")
     private String history;
+
+    public UserInfo() {
+    }
+
+    public UserInfo(String account, String name, Integer sex, String headImg, Integer coins, Integer gems) {
+        this.account = account;
+        this.name = name;
+        this.sex = sex;
+        this.headImg = headImg;
+        this.coins = coins;
+        this.gems = gems;
+    }
 }

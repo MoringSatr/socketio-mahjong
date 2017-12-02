@@ -14,7 +14,7 @@ public class User {
     private String sessionId;
 
     public Long userId() {
-        return this.userInfo.getUserid();
+        return this.userInfo.getUserId();
     }
 
     public String getSessionId() {
