@@ -25,13 +25,19 @@ public class Room implements Saveable {
 
     private int nextButton;
 
-    /** 房间位子信息 */
+    /**
+     * 房间位子信息
+     */
     private Seats seats;
 
-    /** 房间配置信息 */
+    /**
+     * 房间配置信息
+     */
     private RoomConfig conf;
 
-    /** 房间游戏信息 */
+    /**
+     * 房间游戏信息
+     */
     private GameManager gameManager;
 
     public Room(RoomInfo roomInfo) {
@@ -42,7 +48,8 @@ public class Room implements Saveable {
         this.nextButton = roomInfo.getNextButton();
 
         this.seats = new Seats(roomInfo);
-        this.conf = new RoomConfig().decode(roomInfo.getBaseInfo());
+//        this.conf = new RoomConfig().decode(roomInfo.getBaseInfo());
+        this.conf = roomInfo.getRoomConfig();
         initGameManager();
     }
 

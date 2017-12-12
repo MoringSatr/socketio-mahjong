@@ -36,8 +36,8 @@ public class ClientController {
     @GetMapping("/create_private_room")
     public Map<String, Object> createPrivateRoom(@RequestParam("account") String account,
                                           @RequestParam("sign") String sign,
-            @RequestParam("userid") long userId, @RequestParam("name") String name, HttpServletRequest request) {
-        return this.clientService.createPrivateRoom(account, sign, userId, name, request).result();
+            @RequestParam("userid") long userId, @RequestParam("name") String name, @RequestParam("conf")String conf, HttpServletRequest request) {
+        return this.clientService.createPrivateRoom(account, sign, userId, name, conf, request).result();
     }
 
     @GetMapping("/enter_private_room")

@@ -40,7 +40,11 @@ public class TokenContext {
     }
 
     public UserToken createToken(long userId, long lifeTime) {
+        if(this.userTokenMap.containsKey(userId)) {
+            this.remove(userId);
+        }
         UserToken userToken = new UserToken(userId, lifeTime);
+        this.add(userToken);
         return userToken;
     }
 

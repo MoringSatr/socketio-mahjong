@@ -15,7 +15,7 @@ public interface ClientService {
 
     ResultEntity createUser(String account, String sign, String name, HttpServletRequest request);
 
-    ResultEntity createPrivateRoom(String account, String sign, long userId, String name, HttpServletRequest request);
+    ResultEntity createPrivateRoom(String account, String sign, long userId, String name, String conf, HttpServletRequest request);
 
     ResultEntity enterPrivateRoom(String roomId, String account, long userId, String name, HttpServletRequest request);
 

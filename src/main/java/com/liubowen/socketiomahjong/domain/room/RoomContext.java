@@ -7,6 +7,7 @@ import com.liubowen.socketiomahjong.common.Initializeable;
 import com.liubowen.socketiomahjong.common.Storageable;
 import com.liubowen.socketiomahjong.domain.user.UserLocation;
 import com.liubowen.socketiomahjong.entity.RoomInfo;
+import lombok.experimental.var;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,6 +21,11 @@ import java.util.concurrent.ConcurrentMap;
  */
 @Component
 public class RoomContext implements Storageable, Initializeable {
+
+    private static int[] DI_FEN = new int[]{1, 2, 5};
+    private static int[] MAX_FAN = new int[]{3, 4, 5};
+    private static int[] JU_SHU = new int[]{4, 8};
+    private static int[] JU_SHU_COST = new int[]{2, 3};
 
     private ConcurrentMap<String, Room> roomMap = Maps.newConcurrentMap();
 
@@ -51,25 +57,24 @@ public class RoomContext implements Storageable, Initializeable {
         for (int i = 0; i < 6; i++) {
             roomId += Math.round(Math.random() * 9);
         }
-        if (this.creatingRoomIds.contains(roomId)) {
-            generateRoomId();
-        }
         return roomId;
     }
 
     public Room constructRoomFromDb(RoomInfo roomInfo) {
-        Room room = initRoom(roomInfo);
-        addRoom(room);
+        Room room = this.initRoom(roomInfo);
+        this.addRoom(room);
         return room;
     }
 
     private Room initRoom(RoomInfo roomInfo) {
         Room room = new Room(roomInfo);
-        initUserLocation(room.allRoomPlayer(), room.getId());
+        this.initUserLocation(room.allRoomPlayer(), room.getId());
         return room;
     }
 
-    /** 初始化玩家所在位置信息 */
+    /**
+     * 初始化玩家所在位置信息
+     */
     private void initUserLocation(List<RoomPlayer> roomPlayers, String roomId) {
         roomPlayers.forEach(roomPlayer -> {
             UserLocation userLocation = new UserLocation();
@@ -87,12 +92,40 @@ public class RoomContext implements Storageable, Initializeable {
         this.creatingRoomIds.add(roomId);
     }
 
-    public Room createRoom() {
-        RoomInfo roomInfo = new RoomInfo();
-        roomInfo.setId(generateRoomId());
-        RoomConfig roomConfig = new RoomConfig();
-        roomInfo.setBaseInfo(roomConfig.encode());
+    public Room createRoom(RoomConfig roomConfig, int gems, String ip, int port) {
+        if (roomConfig == null) {
+            return null;
+        }
 
+        if (roomConfig.getDifen() < 0 || roomConfig.getDifen() > DI_FEN.length) {
+            return null;
+        }
+
+        if (roomConfig.getZimo() < 0 || roomConfig.getZimo() > 2) {
+            return null;
+        }
+
+        if (roomConfig.getZuidafanshu() < 0 || roomConfig.getZuidafanshu() > MAX_FAN.length) {
+            return null;
+        }
+
+        if (roomConfig.getJushuxuanze() < 0 || roomConfig.getJushuxuanze() > JU_SHU.length) {
+            return null;
+        }
+
+        int cost = JU_SHU_COST[roomConfig.getJushuxuanze()];
+        if (cost > gems) {
+            return null;
+        }
+        return this.fnCreate(ip, port, roomConfig);
+    }
+
+    private Room fnCreate(String ip, int port, RoomConfig roomConfig) {
+        String roomId = generateRoomId();
+        if (this.creatingRoomIds.contains(roomId)) {
+            this.fnCreate(ip, port, roomConfig);
+        }
+        RoomInfo roomInfo = new RoomInfo(roomId, ip, port, roomConfig);
         Room room = this.initRoom(roomInfo);
         this.addRoom(room);
         return room;

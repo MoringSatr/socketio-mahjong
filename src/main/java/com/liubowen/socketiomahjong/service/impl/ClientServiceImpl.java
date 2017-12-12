@@ -2,13 +2,16 @@ package com.liubowen.socketiomahjong.service.impl;
 
 import com.liubowen.socketiomahjong.common.ResultEntity;
 import com.liubowen.socketiomahjong.constant.Constant;
+import com.liubowen.socketiomahjong.domain.room.Room;
 import com.liubowen.socketiomahjong.entity.UserInfo;
 import com.liubowen.socketiomahjong.mapper.RoomInfoMapper;
 import com.liubowen.socketiomahjong.mapper.UserInfoMapper;
 import com.liubowen.socketiomahjong.service.ClientService;
+import com.liubowen.socketiomahjong.service.RoomDomainService;
 import com.liubowen.socketiomahjong.service.UserDomainService;
 import com.liubowen.socketiomahjong.util.encode.Md5Util;
 import com.liubowen.socketiomahjong.util.result.ResultEntityUtil;
+import com.liubowen.socketiomahjong.util.time.TimeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +34,9 @@ public class ClientServiceImpl implements ClientService {
 
     @Autowired
     private UserDomainService userDomainService;
+
+    @Autowired
+    private RoomDomainService roomDomainService;
 
     private boolean checkAccount(String account, String sign, String ip) {
         if (StringUtils.isEmpty(account) || StringUtils.isEmpty(sign)) {
@@ -92,7 +98,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ResultEntity createPrivateRoom(String account, String sign, long userId, String name, HttpServletRequest request) {
+    public ResultEntity createPrivateRoom(String account, String sign, long userId, String name, String conf, HttpServletRequest request) {
         String ip = Constant.getIpByRequest(request);
         if (checkAccount(account, sign, ip)) {
             return ResultEntityUtil.err(2, "login failed.");
@@ -106,7 +112,25 @@ public class ClientServiceImpl implements ClientService {
             return ResultEntityUtil.err(-1, "user is playing in room now.");
         }
 
-        return null;
+        ResultEntity createRoomResult = this.roomDomainService.createRoom(account, userId, conf);
+        String roomId = createRoomResult.get("roomId").toString();
+        if (createRoomResult.ok() && StringUtils.isBlank(roomId)) {
+            ResultEntity enterRoomResult = this.roomDomainService.enterRoom(userId, name, roomId);
+            Object enterInfo = enterRoomResult.get("enterInfo");
+            if (enterInfo != null) {
+                //TODO
+                ResultEntity result = ResultEntityUtil.ok();
+                result.add("roomid", roomId);
+                result.add("ip", ip);
+                result.add("port", 0);
+                result.add("token", "");
+                result.add("time", TimeUtil.currentTimeMillis());
+                return result;
+            } else {
+                return ResultEntityUtil.err("room doesn't exist.");
+            }
+        }
+        return ResultEntityUtil.err("create failed.");
     }
 
     @Override

@@ -68,4 +68,12 @@ public class ResultEntity {
         return this.params;
     }
 
+    public boolean ok() {
+        return this.errcode == 0;
+    }
+
+    public Object get(String key) {
+        return this.params.get(key);
+    }
+
 }

@@ -13,6 +13,14 @@ public class User {
 
     private String sessionId;
 
+    public User(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
+
+    public void bind(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
     public Long userId() {
         return this.userInfo.getUserId();
     }

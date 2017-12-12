@@ -1,5 +1,6 @@
 package com.liubowen.socketiomahjong.service;
 
+import com.liubowen.socketiomahjong.common.ResultEntity;
 import com.liubowen.socketiomahjong.domain.room.Room;
 
 /**
@@ -9,5 +10,7 @@ import com.liubowen.socketiomahjong.domain.room.Room;
  */
 public interface RoomDomainService {
 
-    Room createRoom(String account, long userId, String conf);
+    ResultEntity createRoom(String account, long userId, String conf);
+
+    ResultEntity enterRoom(long userId, String name,  String roomId);
 }

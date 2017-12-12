@@ -26,6 +26,24 @@ public class RoomConfig {
 
     private long creatorId;
 
+    private int difen;
+
+    private int zimo;
+
+    private int jiangdui;
+
+    private int huansanzhang;
+
+    private int zuidafanshu;
+
+    private int jushuxuanze;
+
+    private int dianganghua;
+
+    private int menqing;
+
+    private int tiandihu;
+
     public RoomConfig decode(String data) {
         return this;
     }

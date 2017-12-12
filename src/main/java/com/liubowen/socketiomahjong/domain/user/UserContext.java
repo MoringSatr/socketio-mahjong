@@ -2,12 +2,17 @@ package com.liubowen.socketiomahjong.domain.user;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import com.google.common.collect.Maps;
+import com.liubowen.socketiomahjong.domain.room.Room;
+import com.liubowen.socketiomahjong.domain.room.RoomContext;
+import com.liubowen.socketiomahjong.domain.room.Seat;
 import com.liubowen.socketiomahjong.session.Session;
 import com.liubowen.socketiomahjong.session.SessionContext;
 import lombok.experimental.var;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -20,6 +25,9 @@ public class UserContext {
 
     @Autowired
     private SessionContext sessionContext;
+
+    @Autowired
+    private RoomContext roomContext;
 
     private ConcurrentMap<Long, User> userMap = Maps.newConcurrentMap();
 
@@ -45,111 +53,67 @@ public class UserContext {
 
     public void sendMessage(Long userId, String event, Object... message) {
         User user = this.get(userId);
-        if(user == null) {
+        if (user == null) {
             return;
         }
-        if(!user.hasSession()) {
+        if (!user.hasSession()) {
             return;
         }
         String sessionId = user.getSessionId();
         this.sessionContext.sendToSession(sessionId, event, message);
     }
 
-    public void kickAllInRoom(Integer roomId) {
-        if(roomId == null || roomId == 0) {
+    public void kickAllInRoom(String roomId) {
+        if (StringUtils.isBlank(roomId)) {
             return;
         }
+        Room room = this.roomContext.getRoom(roomId);
+        if (room == null) {
+            return;
+        }
+        List<Seat> seats = room.allSeat();
+        seats.forEach(seat -> {
+            if (seat.hasRoomPlayer()) {
+                long userId = seat.getUserId();
+                User user = this.get(userId);
+                if (user.hasSession()) {
+                    String sessionId = user.getSessionId();
+                    Session session = this.sessionContext.get(sessionId);
+                    session.disconnect();
+                }
+                this.remove(userId);
+            }
+        });
+
 
     }
 
     public void bind(long userId, SocketIOClient client) {
         Session session = Session.get(client);
         session.login(userId);
+        User user = this.get(userId);
+        user.bind(session.sessionId());
     }
 
-//    exports.bind = function(userId,socket){
-//        userList[userId] = socket;
-//        userOnline++;
-//    };
-//
-//    exports.del = function(userId,socket){
-//        delete userList[userId];
-//        userOnline--;
-//    };
-//
-//    exports.get = function(userId){
-//        return userList[userId];
-//    };
-//
-//    exports.isOnline = function(userId){
-//        var data = userList[userId];
-//        if(data != null){
-//            return true;
-//        }
-//        return false;
-//    };
-//
-//    exports.getOnlineCount = function(){
-//        return userOnline;
-//    }
-//
-//    exports.sendMsg = function(userId,event,msgdata){
-//        console.log(event);
-//        var userInfo = userList[userId];
-//        if(userInfo == null){
-//            return;
-//        }
-//        var socket = userInfo;
-//        if(socket == null){
-//            return;
-//        }
-//
-//        socket.emit(event,msgdata);
-//    };
-//
-//    exports.kickAllInRoom = function(roomId){
-//        if(roomId == null){
-//            return;
-//        }
-//        var roomInfo = roomMgr.getRoom(roomId);
-//        if(roomInfo == null){
-//            return;
-//        }
-//
-//        for(var i = 0; i < roomInfo.seats.length; ++i){
-//            var rs = roomInfo.seats[i];
-//
-//            //如果不需要发给发送方，则跳过
-//            if(rs.userId > 0){
-//                var socket = userList[rs.userId];
-//                if(socket != null){
-//                    exports.del(rs.userId);
-//                    socket.disconnect();
-//                }
-//            }
-//        }
-//    };
-//
-//    exports.broacastInRoom = function(event,data,sender,includingSender){
-//        var roomId = roomMgr.getUserRoom(sender);
-//        if(roomId == null){
-//            return;
-//        }
-//        var roomInfo = roomMgr.getRoom(roomId);
-//        if(roomInfo == null){
-//            return;
-//        }
-//
-//        for(var i = 0; i < roomInfo.seats.length; ++i){
-//            var rs = roomInfo.seats[i];
-//
-//            //如果不需要发给发送方，则跳过
-//            if(rs.userId == sender && includingSender != true){
-//                continue;
-//            }
-//            var socket = userList[rs.userId];
-//            if(socket != null){
-//                socket.emit(event,data);
-//            }
-//        }
+    public void broacastInRoom(Long senderId, boolean includingSender, String event, Object... message) {
+        String roomId = this.roomContext.getUserRoom(senderId);
+        if (StringUtils.isBlank(roomId)) {
+            return;
+        }
+        Room room = this.roomContext.getRoom(roomId);
+        if (room == null) {
+            return;
+        }
+        List<Seat> seats = room.allSeat();
+        for (Seat seat : seats) {
+            if (seat.hasRoomPlayer()) {
+                long userId = seat.getUserId();
+                if (userId == senderId && !includingSender) {
+                    continue;
+                }
+                this.sendMessage(userId, event, message);
+            }
+        }
+    }
+
 }

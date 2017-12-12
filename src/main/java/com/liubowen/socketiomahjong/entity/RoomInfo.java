@@ -1,8 +1,10 @@
 package com.liubowen.socketiomahjong.entity;
 
+import com.google.common.collect.Lists;
+import com.liubowen.socketiomahjong.domain.room.RoomConfig;
 import com.liubowen.socketiomahjong.domain.room.RoomPlayer;
+import com.liubowen.socketiomahjong.util.time.TimeUtil;
 import lombok.Data;
-
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -24,9 +26,6 @@ public class RoomInfo {
     @Column(name = "id")
     private String id;
 
-    @Column(name = "base_info")
-    private String baseInfo;
-
     @Column(name = "create_time")
     private Long createTime;
 
@@ -36,60 +35,25 @@ public class RoomInfo {
     @Column(name = "next_button")
     private int nextButton;
 
-    @Column(name = "user_id0")
-    private Long userId0;
-
-    @Column(name = "user_icon0")
-    private String userIcon0;
-
-    @Column(name = "user_name0")
-    private String userName0;
-
-    @Column(name = "user_score0")
-    private Integer userScore0;
-
-    @Column(name = "user_id1")
-    private Long userId1;
-
-    @Column(name = "user_icon1")
-    private String userIcon1;
-
-    @Column(name = "user_name1")
-    private String userName1;
-
-    @Column(name = "user_score1")
-    private Integer userScore1;
-
-    @Column(name = "user_id2")
-    private Long userId2;
-
-    @Column(name = "user_icon2")
-    private String userIcon2;
-
-    @Column(name = "user_name2")
-    private String userName2;
-
-    @Column(name = "user_score2")
-    private Integer userScore2;
-
-    @Column(name = "user_id3")
-    private Long userId3;
-
-    @Column(name = "user_icon3")
-    private String userIcon3;
-
-    @Column(name = "user_name3")
-    private String userName3;
-
-    @Column(name = "user_score3")
-    private Integer userScore3;
-
     @Column(name = "ip")
     private String ip;
 
     @Column(name = "port")
-    private String port;
+    private int port;
 
     private List<RoomPlayer> roomPlayers;
+
+    private RoomConfig roomConfig;
+
+    public RoomInfo(String id, String ip, int port, RoomConfig roomConfig) {
+        this.id = id;
+        this.createTime = TimeUtil.currentTimeMillis();
+        this.numOfTurns = 0;
+        this.nextButton = 0;
+        this.ip = ip;
+        this.port = port;
+        this.roomPlayers = Lists.newArrayList();
+        this.roomConfig = roomConfig;
+    }
 
 }
