@@ -1,10 +1,12 @@
 package com.liubowen.socketiomahjong.entity;
 
+import com.liubowen.socketiomahjong.domain.room.RoomPlayer;
 import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.List;
 
 /**
  * @author liubowen
@@ -87,5 +89,7 @@ public class RoomInfo {
 
     @Column(name = "port")
     private String port;
+
+    private List<RoomPlayer> roomPlayers;
 
 }

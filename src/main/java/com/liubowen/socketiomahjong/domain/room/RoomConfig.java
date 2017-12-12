@@ -24,11 +24,14 @@ public class RoomConfig {
 
     private Map<Integer, List<Integer>> gameSeats;
 
-    public void decode(String data) {
+    private long creatorId;
 
+    public RoomConfig decode(String data) {
+        return this;
     }
 
     public String encode() {
         return "";
     }
+
 }

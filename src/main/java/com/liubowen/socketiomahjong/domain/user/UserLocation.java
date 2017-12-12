@@ -1,5 +1,6 @@
 package com.liubowen.socketiomahjong.domain.user;
 
+import com.liubowen.socketiomahjong.common.Saveable;
 import lombok.Data;
 
 /**
@@ -8,11 +9,16 @@ import lombok.Data;
  * @description
  */
 @Data
-public class UserLocation {
+public class UserLocation implements Saveable {
 
     private Long userId;
 
     private String roomId;
 
     private int seatIndex;
+
+    @Override
+    public void save() {
+
+    }
 }
