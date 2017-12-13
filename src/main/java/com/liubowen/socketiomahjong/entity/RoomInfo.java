@@ -41,9 +41,11 @@ public class RoomInfo {
     @Column(name = "port")
     private int port;
 
-    private List<RoomPlayer> roomPlayers;
-
-    private RoomConfig roomConfig;
+//    @Column(name = "roomPlayers")
+//    private List<RoomPlayer> roomPlayers;
+//
+//    @Column(name = "roomConfig")
+//    private RoomConfig roomConfig;
 
     public RoomInfo(String id, String ip, int port, RoomConfig roomConfig) {
         this.id = id;
@@ -52,8 +54,8 @@ public class RoomInfo {
         this.nextButton = 0;
         this.ip = ip;
         this.port = port;
-        this.roomPlayers = Lists.newArrayList();
-        this.roomConfig = roomConfig;
+//        this.roomPlayers = Lists.newArrayList();
+//        this.roomConfig = roomConfig;
     }
 
 }

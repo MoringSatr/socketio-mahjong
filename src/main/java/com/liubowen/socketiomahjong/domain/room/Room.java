@@ -49,7 +49,7 @@ public class Room implements Saveable {
 
         this.seats = new Seats(roomInfo);
 //        this.conf = new RoomConfig().decode(roomInfo.getBaseInfo());
-        this.conf = roomInfo.getRoomConfig();
+//        this.conf = roomInfo.getRoomConfig();
         initGameManager();
     }
 

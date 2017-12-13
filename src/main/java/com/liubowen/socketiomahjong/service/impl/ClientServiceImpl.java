@@ -52,7 +52,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public ResultEntity login(String account, String sign, HttpServletRequest request) {
         String ip = Constant.getIpByRequest(request);
-        if (checkAccount(account, sign, ip)) {
+        if (!checkAccount(account, sign, ip)) {
             return ResultEntityUtil.err(2, "login failed.");
         }
         UserInfo userInfo = this.userInfoMapper.findUserInfoByAccount(account);
@@ -85,7 +85,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public ResultEntity createUser(String account, String sign, String name, HttpServletRequest request) {
         String ip = Constant.getIpByRequest(request);
-        if (checkAccount(account, sign, ip)) {
+        if (!checkAccount(account, sign, ip)) {
             return ResultEntityUtil.err(2, "login failed.");
         }
         boolean isUserExist = this.userInfoMapper.isUserExistByAccount(account);
@@ -100,7 +100,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public ResultEntity createPrivateRoom(String account, String sign, long userId, String name, String conf, HttpServletRequest request) {
         String ip = Constant.getIpByRequest(request);
-        if (checkAccount(account, sign, ip)) {
+        if (!checkAccount(account, sign, ip)) {
             return ResultEntityUtil.err(2, "login failed.");
         }
         UserInfo userInfo = this.userInfoMapper.findUserInfoByAccount(account);
@@ -141,7 +141,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public ResultEntity getHistoryList(String account, String sign, long userId, HttpServletRequest request) {
         String ip = Constant.getIpByRequest(request);
-        if (checkAccount(account, sign, ip)) {
+        if (!checkAccount(account, sign, ip)) {
             return ResultEntityUtil.err(2, "login failed.");
         }
         return null;
@@ -155,7 +155,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public ResultEntity getDetailOfGame(String account, String sign, String uuid, int index, HttpServletRequest request) {
         String ip = Constant.getIpByRequest(request);
-        if (checkAccount(account, sign, ip)) {
+        if (!checkAccount(account, sign, ip)) {
             return ResultEntityUtil.err(2, "login failed.");
         }
         return null;
@@ -164,19 +164,28 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public ResultEntity getUserStatus(String account, String sign, HttpServletRequest request) {
         String ip = Constant.getIpByRequest(request);
-        if (checkAccount(account, sign, ip)) {
+        if (!checkAccount(account, sign, ip)) {
             return ResultEntityUtil.err(2, "login failed.");
         }
-        return null;
+        UserInfo userInfo = this.userInfoMapper.findUserInfoByAccount(account);
+        if(userInfo == null) {
+            return ResultEntityUtil.err("user not find.");
+        }
+        ResultEntity resultEntity = ResultEntityUtil.ok();
+        resultEntity.add("gems", userInfo.getGems());
+        return resultEntity;
     }
 
     @Override
     public ResultEntity getMessage(String account, String sign, String type, String version, HttpServletRequest request) {
         String ip = Constant.getIpByRequest(request);
-        if (checkAccount(account, sign, ip)) {
+        if (!checkAccount(account, sign, ip)) {
             return ResultEntityUtil.err(2, "login failed.");
         }
-        return null;
+        ResultEntity resultEntity = ResultEntityUtil.ok();
+        resultEntity.add("msg", "我是刘博文");
+        resultEntity.add("version", Constant.VERSION);
+        return resultEntity;
     }
 
     @Override

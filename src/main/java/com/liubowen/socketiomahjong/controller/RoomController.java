@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -20,7 +21,7 @@ public class RoomController {
                                           @RequestParam("clientip") String clientip,
             @RequestParam("clientport") int clientport, @RequestParam("httpPort") int httpPort,
                                           @RequestParam("load") String load,
-            @RequestParam("id") int id) {
+            @RequestParam("id") int id, HttpServletRequest request) {
         return null;
     }
 }

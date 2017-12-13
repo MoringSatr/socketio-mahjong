@@ -36,10 +36,10 @@ public class Seats {
     }
 
     private void initRoomPlayers(RoomInfo roomInfo) {
-        List<RoomPlayer> roomPlayers = roomInfo.getRoomPlayers();
-        roomPlayers.forEach(roomPlayer -> {
-            putRoomPLayerOnSeat(roomPlayer);
-        });
+//        List<RoomPlayer> roomPlayers = roomInfo.getRoomPlayers();
+//        roomPlayers.forEach(roomPlayer -> {
+//            putRoomPLayerOnSeat(roomPlayer);
+//        });
     }
 
     public List<Seat> allSeat() {

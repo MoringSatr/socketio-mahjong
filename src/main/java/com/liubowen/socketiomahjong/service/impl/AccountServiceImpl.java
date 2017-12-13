@@ -83,7 +83,7 @@ public class AccountServiceImpl implements AccountService {
     public ResultEntity guest(String account, HttpServletRequest request) {
         ResultEntity resultEntity = ResultEntityUtil.ok();
         String reqIp = Constant.getIpByRequest(request);
-        String sign = Md5Util.MD5("guest_" + account + reqIp + Constant.ACCOUNT_PRI_KEY);
+        String sign = Md5Util.MD5(account + reqIp + Constant.ACCOUNT_PRI_KEY);
         resultEntity.add("account", account);
         resultEntity.add("halladdr", Constant.HALL_ADDR);
         resultEntity.add("sign", sign);

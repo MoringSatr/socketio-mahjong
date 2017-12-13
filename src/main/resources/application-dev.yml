@@ -1,6 +1,6 @@
 server:
   port: 9009
-  servlet-path: /mahjong
+  servlet-path: /
 netty:
   socketio:
     host: 127.0.0.1
