@@ -7,7 +7,6 @@ import com.liubowen.socketiomahjong.common.Initializeable;
 import com.liubowen.socketiomahjong.common.Storageable;
 import com.liubowen.socketiomahjong.domain.user.UserLocation;
 import com.liubowen.socketiomahjong.entity.RoomInfo;
-import lombok.experimental.var;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
