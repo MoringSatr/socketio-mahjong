@@ -14,7 +14,7 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface UserInfoMapper extends MyMapper<UserInfo> {
 
-    @Select("SELECT count(userid) > 0 FROM t_users WHERE account = #{account}")
+    @Select("SELECT count(*) > 0 FROM t_users WHERE account = #{account}")
     boolean isUserExistByAccount(@Param("account") String account);
 
     @Select("SELECT * FROM t_users WHERE account = #{account}")

@@ -4,9 +4,7 @@ import com.liubowen.socketiomahjong.domain.room.RoomConfig;
 import com.liubowen.socketiomahjong.util.time.TimeUtil;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author liubowen
@@ -18,7 +16,7 @@ import javax.persistence.Table;
 public class RoomInfo {
 
     @Id
-    @Column(name = "uuid")
+    @GeneratedValue(generator = "system-uuid")
     private String uuid;
 
     @Column(name = "id")
