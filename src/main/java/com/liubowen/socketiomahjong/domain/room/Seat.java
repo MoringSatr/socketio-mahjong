@@ -1,5 +1,6 @@
 package com.liubowen.socketiomahjong.domain.room;
 
+import com.liubowen.socketiomahjong.entity.RoomPlayerInfo;
 import lombok.Data;
 
 /**
@@ -10,7 +11,7 @@ import lombok.Data;
 @Data
 public class Seat {
 
-    private RoomPlayer roomPlayer;
+    private RoomPlayerInfo roomPlayerInfo;
 
     private boolean ready;
 
@@ -29,18 +30,18 @@ public class Seat {
     private int numChaJiao;
 
     public long getUserId() {
-        if (this.roomPlayer == null) {
+        if (this.roomPlayerInfo == null) {
             return 0;
         }
-        return this.roomPlayer.getUserId();
+        return this.roomPlayerInfo.getUserId();
     }
 
     public boolean hasRoomPlayer() {
-        return this.roomPlayer != null;
+        return this.roomPlayerInfo != null;
     }
 
     public void exitRoom() {
-        this.roomPlayer = null;
+        this.roomPlayerInfo = null;
         this.ready = false;
         this.numZiMo = 0;
         this.numJiePao = 0;

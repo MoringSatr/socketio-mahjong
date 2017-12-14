@@ -3,6 +3,7 @@ package com.liubowen.socketiomahjong.domain.room;
 import com.liubowen.socketiomahjong.common.Saveable;
 import com.liubowen.socketiomahjong.domain.game.*;
 import com.liubowen.socketiomahjong.entity.RoomInfo;
+import com.liubowen.socketiomahjong.entity.RoomPlayerInfo;
 import lombok.Getter;
 
 import java.util.List;
@@ -72,7 +73,7 @@ public class Room implements Saveable {
         return this.seats.allSeat();
     }
 
-    public List<RoomPlayer> allRoomPlayer() {
+    public List<RoomPlayerInfo> allRoomPlayer() {
         return this.seats.allRoomPlayer();
     }
 
@@ -88,13 +89,13 @@ public class Room implements Saveable {
         this.seats.exitRoom(userId);
     }
 
-    public void enterRoom(RoomPlayer roomPlayer) {
+    public void enterRoom(RoomPlayerInfo roomPlayerInfo) {
         if (this.isFull()) {
             return;
         }
         int idleSeatIndex = this.idleSeatIndex();
-        roomPlayer.setSeatIndex(idleSeatIndex);
-        this.seats.putRoomPLayerOnSeat(roomPlayer);
+        roomPlayerInfo.setSeatIndex(idleSeatIndex);
+        this.seats.putRoomPLayerOnSeat(roomPlayerInfo);
     }
 
     private boolean isFull() {

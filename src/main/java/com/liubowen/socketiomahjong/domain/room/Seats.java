@@ -3,6 +3,7 @@ package com.liubowen.socketiomahjong.domain.room;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.liubowen.socketiomahjong.entity.RoomInfo;
+import com.liubowen.socketiomahjong.entity.RoomPlayerInfo;
 
 import java.util.List;
 import java.util.Map;
@@ -36,9 +37,9 @@ public class Seats {
     }
 
     private void initRoomPlayers(RoomInfo roomInfo) {
-//        List<RoomPlayer> roomPlayers = roomInfo.getRoomPlayers();
-//        roomPlayers.forEach(roomPlayer -> {
-//            putRoomPLayerOnSeat(roomPlayer);
+        // List<RoomPlayerInfo> roomPlayerInfos = roomInfo.getRoomPlayerInfos();
+        // roomPlayerInfos.forEach(roomPlayerInfo -> {
+        // putRoomPLayerOnSeat(roomPlayerInfo);
 //        });
     }
 
@@ -46,21 +47,21 @@ public class Seats {
         return Lists.newArrayList(this.seats.values());
     }
 
-    public List<RoomPlayer> allRoomPlayer() {
-        List<RoomPlayer> roomPlayers = Lists.newArrayList();
+    public List<RoomPlayerInfo> allRoomPlayer() {
+        List<RoomPlayerInfo> roomPlayerInfos = Lists.newArrayList();
         this.allSeat().forEach(seat -> {
             if (seat.hasRoomPlayer()) {
-                roomPlayers.add(seat.getRoomPlayer());
+                roomPlayerInfos.add(seat.getRoomPlayerInfo());
             }
         });
-        return roomPlayers;
+        return roomPlayerInfos;
     }
 
-    public void putRoomPLayerOnSeat(RoomPlayer roomPlayer) {
-        int seatIndex = roomPlayer.getSeatIndex();
+    public void putRoomPLayerOnSeat(RoomPlayerInfo roomPlayerInfo) {
+        int seatIndex = roomPlayerInfo.getSeatIndex();
         Seat seat = this.seats.get(seatIndex);
-        seat.setRoomPlayer(roomPlayer);
-        this.userIdWithSeatIndexMap.put(roomPlayer.getUserId(), seatIndex);
+        seat.setRoomPlayerInfo(roomPlayerInfo);
+        this.userIdWithSeatIndexMap.put(roomPlayerInfo.getUserId(), seatIndex);
     }
 
     public Seat getSeatByUserId(long userId) {

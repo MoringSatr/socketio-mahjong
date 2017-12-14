@@ -7,6 +7,7 @@ import com.liubowen.socketiomahjong.common.Initializeable;
 import com.liubowen.socketiomahjong.common.Storageable;
 import com.liubowen.socketiomahjong.domain.user.UserLocation;
 import com.liubowen.socketiomahjong.entity.RoomInfo;
+import com.liubowen.socketiomahjong.entity.RoomPlayerInfo;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -74,8 +75,8 @@ public class RoomContext implements Storageable, Initializeable {
     /**
      * 初始化玩家所在位置信息
      */
-    private void initUserLocation(List<RoomPlayer> roomPlayers, String roomId) {
-        roomPlayers.forEach(roomPlayer -> {
+    private void initUserLocation(List<RoomPlayerInfo> roomPlayerInfos, String roomId) {
+        roomPlayerInfos.forEach(roomPlayer -> {
             UserLocation userLocation = new UserLocation();
             userLocation.setRoomId(roomId);
             long userId = roomPlayer.getUserId();
@@ -135,8 +136,8 @@ public class RoomContext implements Storageable, Initializeable {
         if (room == null) {
             return;
         }
-        List<RoomPlayer> roomPlayers = room.allRoomPlayer();
-        roomPlayers.forEach(roomPlayer -> {
+        List<RoomPlayerInfo> roomPlayerInfos = room.allRoomPlayer();
+        roomPlayerInfos.forEach(roomPlayer -> {
             this.userLocationMap.remove(roomPlayer.getUserId());
         });
         this.roomMap.remove(roomId);
@@ -161,8 +162,8 @@ public class RoomContext implements Storageable, Initializeable {
 
     public void enterRoom(String roomId, long userId, String userName) {
         Room room = this.getRoom(roomId);
-        RoomPlayer roomPlayer = new RoomPlayer(userId, userName, 100);
-        room.enterRoom(roomPlayer);
+        RoomPlayerInfo roomPlayerInfo = new RoomPlayerInfo(userId, userName, 100);
+        room.enterRoom(roomPlayerInfo);
     }
 
     public void setReady(long userId, boolean ready) {

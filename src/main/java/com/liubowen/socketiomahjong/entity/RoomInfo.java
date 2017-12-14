@@ -1,14 +1,12 @@
 package com.liubowen.socketiomahjong.entity;
 
-import com.google.common.collect.Lists;
 import com.liubowen.socketiomahjong.domain.room.RoomConfig;
-import com.liubowen.socketiomahjong.domain.room.RoomPlayer;
 import com.liubowen.socketiomahjong.util.time.TimeUtil;
 import lombok.Data;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.List;
 
 /**
  * @author liubowen
@@ -41,11 +39,11 @@ public class RoomInfo {
     @Column(name = "port")
     private int port;
 
-//    @Column(name = "roomPlayers")
-//    private List<RoomPlayer> roomPlayers;
+    // @OneToMany(cascade = { CascadeType.ALL }, targetEntity = RoomPlayerInfo.class)
+    // private List<RoomPlayerInfo> roomPlayerInfos;
 //
-//    @Column(name = "roomConfig")
-//    private RoomConfig roomConfig;
+    // @OneToOne(targetEntity = RoomConfigInfo.class)
+    // private RoomConfigInfo roomConfig;
 
     public RoomInfo(String id, String ip, int port, RoomConfig roomConfig) {
         this.id = id;
@@ -54,7 +52,7 @@ public class RoomInfo {
         this.nextButton = 0;
         this.ip = ip;
         this.port = port;
-//        this.roomPlayers = Lists.newArrayList();
+        // this.roomPlayerInfos = Lists.newArrayList();
 //        this.roomConfig = roomConfig;
     }
 
