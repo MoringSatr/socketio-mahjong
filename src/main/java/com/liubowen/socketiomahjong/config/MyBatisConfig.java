@@ -29,8 +29,8 @@ public class MyBatisConfig {
     @Bean(name = "defaultSqlSessionFactory")
     public SqlSessionFactory defaultSqlSessionFactory() {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
-        bean.setTypeHandlersPackage("com.liubowen.socketiomahjong.util.mybatis.typeHandler");
         bean.setDataSource(defaultDataSource);
+//        bean.setTypeHandlersPackage("com.liubowen.socketiomahjong.util.mybatis.typeHandler");
         bean.setTypeAliasesPackage("com.liubowen.socketiomahjong.entity");
         //分页插件设置
         PageHelper pageHelper = new PageHelper();

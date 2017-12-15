@@ -1,10 +1,12 @@
 package com.liubowen.socketiomahjong.entity;
 
+import com.google.common.collect.Lists;
 import com.liubowen.socketiomahjong.domain.room.RoomConfig;
 import com.liubowen.socketiomahjong.util.time.TimeUtil;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * @author liubowen
@@ -16,8 +18,8 @@ import javax.persistence.*;
 public class RoomInfo {
 
     @Id
-    @GeneratedValue(generator = "system-uuid")
-    private String uuid;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long uuid;
 
     @Column(name = "id")
     private String id;
@@ -37,11 +39,14 @@ public class RoomInfo {
     @Column(name = "port")
     private int port;
 
-    // @OneToMany(cascade = { CascadeType.ALL }, targetEntity = RoomPlayerInfo.class)
-    // private List<RoomPlayerInfo> roomPlayerInfos;
-//
-    // @OneToOne(targetEntity = RoomConfigInfo.class)
-    // private RoomConfigInfo roomConfig;
+    @Transient
+    private List<RoomPlayerInfo> roomPlayerInfos;
+
+    @Transient
+    private RoomConfigInfo roomConfig;
+
+    public RoomInfo() {
+    }
 
     public RoomInfo(String id, String ip, int port, RoomConfig roomConfig) {
         this.id = id;
@@ -50,8 +55,19 @@ public class RoomInfo {
         this.nextButton = 0;
         this.ip = ip;
         this.port = port;
-        // this.roomPlayerInfos = Lists.newArrayList();
+        this.roomPlayerInfos = Lists.newArrayList();
 //        this.roomConfig = roomConfig;
+    }
+
+    public RoomInfo(String id, String ip, int port, RoomConfigInfo roomConfig) {
+        this.id = id;
+        this.createTime = TimeUtil.currentTimeMillis();
+        this.numOfTurns = 0;
+        this.nextButton = 0;
+        this.ip = ip;
+        this.port = port;
+        this.roomPlayerInfos = Lists.newArrayList();
+        this.roomConfig = roomConfig;
     }
 
 }

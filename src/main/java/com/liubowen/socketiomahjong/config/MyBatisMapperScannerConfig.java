@@ -21,7 +21,7 @@ public class MyBatisMapperScannerConfig {
     public MapperScannerConfigurer mapperScannerConfigurer() {
         MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
         mapperScannerConfigurer.setSqlSessionFactoryBeanName("defaultSqlSessionFactory");
-        mapperScannerConfigurer.setBasePackage("com.kx.springboot.dao.mybatis");
+        mapperScannerConfigurer.setBasePackage("com.liubowen.socketiomahjong.mapper");
         //初始化扫描器的相关配置，这里我们要创建一个Mapper的父类
         Properties properties = new Properties();
         properties.setProperty("mappers", "com.liubowen.socketiomahjong.common.MyMapper");

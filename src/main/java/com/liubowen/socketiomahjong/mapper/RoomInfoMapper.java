@@ -17,4 +17,7 @@ public interface RoomInfoMapper extends MyMapper<RoomInfo> {
     @Select("SELECT count(id) > 0 FROM t_rooms WHERE id = #{roomId}")
     boolean isRoomExist(@Param("roomId") String roomId);
 
+    @Select("SELECT * FROM t_rooms WHERE id = #{roomId}")
+    RoomInfo findRoomInfoByRoomId(@Param("roomId") String roomId);
+
 }

@@ -24,20 +24,20 @@ public class Test1 {
     @Column(name = "test_2_id")
     private int test2Id;
 
-    @Column(name = "aa")
-    private List aa;
-
-    @Transient
-    private Test2 test2;
-
-    @Transient
-    private List<Test3> test3s;
+//    @Column(name = "aa")
+//    private List aa;
+//
+//    @Transient
+//    private Test2 test2;
+//
+//    @Transient
+//    private List<Test3> test3s;
 
     public Test1(String name, List aa, Test2 test2, List<Test3> test3s) {
         this.name = name;
-        this.aa = aa;
-        this.test2Id = test2.getId();
-        this.test2 = test2;
-        this.test3s = test3s;
+//        this.aa = aa;
+//        this.test2Id = test2.getId();
+//        this.test2 = test2;
+//        this.test3s = test3s;
     }
 }

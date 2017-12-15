@@ -9,5 +9,5 @@ import tk.mybatis.mapper.common.condition.UpdateByConditionSelectiveMapper;
  * @date 2017/11/9 21:21
  * @description 特别注意，该接口不能mybatis被扫描到，否则会出错
  */
-public interface MyMapper<T> extends Mapper<T>, MySqlMapper<T>, UpdateByConditionSelectiveMapper {
+public interface MyMapper<T> extends Mapper<T>, MySqlMapper<T> {
 }

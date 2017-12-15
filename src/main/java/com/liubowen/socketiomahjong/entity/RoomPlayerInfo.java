@@ -1,10 +1,7 @@
 package com.liubowen.socketiomahjong.entity;
 
 import lombok.Data;
-
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author liubowen
@@ -17,6 +14,7 @@ public class RoomPlayerInfo {
 
     /** 玩家id */
     @Id
+    @Column(name = "userId")
     private long userId;
 
     /** 玩家名字 */
@@ -35,10 +33,24 @@ public class RoomPlayerInfo {
     @Column(name = "room_id")
     private String roomId;
 
+    /** 房间id */
+    @Column(name = "roomId2")
+    private String roomId2;
+
+    public RoomPlayerInfo() {
+    }
+
     public RoomPlayerInfo(long userId, String name, int score) {
         this.userId = userId;
         this.name = name;
         this.score = score;
+    }
+
+    public RoomPlayerInfo(long userId, String name, int score, String roomId) {
+        this.userId = userId;
+        this.name = name;
+        this.score = score;
+        this.roomId = roomId;
     }
 
 }

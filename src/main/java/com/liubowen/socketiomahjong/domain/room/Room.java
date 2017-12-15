@@ -42,7 +42,7 @@ public class Room implements Saveable {
     private GameManager gameManager;
 
     public Room(RoomInfo roomInfo) {
-        this.uuid = roomInfo.getUuid();
+        this.uuid = roomInfo.getUuid() + "";
         this.id = roomInfo.getId();
         this.numOfGames = roomInfo.getNumOfTurns();
         this.createTime = roomInfo.getCreateTime();
