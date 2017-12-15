@@ -1,5 +1,6 @@
 package com.liubowen.socketiomahjong.repo;
 
+import com.liubowen.socketiomahjong.common.ServiceDataRepo;
 import com.liubowen.socketiomahjong.entity.RoomInfo;
 
 /**
@@ -7,11 +8,8 @@ import com.liubowen.socketiomahjong.entity.RoomInfo;
  * @date 2017/12/14 20:07
  * @description
  */
-public interface RoomRepo {
+public interface RoomRepo extends ServiceDataRepo<RoomInfo> {
 
     RoomInfo findRoomInfoByRoomId(String roomId);
 
-    boolean updateRoomInfo(RoomInfo roomInfo);
-
-    boolean deleteRoomInfo(RoomInfo roomInfo);
 }

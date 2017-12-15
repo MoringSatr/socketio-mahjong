@@ -24,12 +24,17 @@ public class RoomRepoImpl implements RoomRepo {
     }
 
     @Override
-    public boolean updateRoomInfo(RoomInfo roomInfo) {
+    public boolean save(RoomInfo roomInfo) {
         return false;
     }
 
     @Override
-    public boolean deleteRoomInfo(RoomInfo roomInfo) {
+    public boolean update(RoomInfo roomInfo) {
+        return false;
+    }
+
+    @Override
+    public boolean delete(RoomInfo roomInfo) {
         return false;
     }
 }
