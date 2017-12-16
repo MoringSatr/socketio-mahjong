@@ -33,10 +33,6 @@ public class RoomPlayerInfo {
     @Column(name = "room_id")
     private String roomId;
 
-    /** 房间id */
-    @Column(name = "roomId2")
-    private String roomId2;
-
     public RoomPlayerInfo() {
     }
 

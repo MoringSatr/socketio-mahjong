@@ -18,8 +18,8 @@ import java.util.List;
 public class RoomInfo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long uuid;
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "select replace(uuid(), '-', '') as id from dual")
+    private String uuid;
 
     @Column(name = "id")
     private String id;

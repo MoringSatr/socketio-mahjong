@@ -9,6 +9,7 @@ import com.liubowen.socketiomahjong.mapper.RoomPlayerInfoMapper;
 import com.liubowen.socketiomahjong.repo.RoomRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
  * @description
  */
 @Repository("roomRepo")
+@Transactional
 public class RoomRepoImpl implements RoomRepo {
 
     @Autowired
@@ -52,7 +54,7 @@ public class RoomRepoImpl implements RoomRepo {
         if (roomPlayerInfos != null && !roomPlayerInfos.isEmpty()) {
             roomPlayerInfos.forEach(roomPlayerInfo -> this.roomPlayerInfoMapper.insertSelective(roomPlayerInfo));
         }
-        this.roomInfoMapper.insertUseGeneratedKeys(roomInfo);
+        this.roomInfoMapper.insert(roomInfo);
         return true;
     }
 
@@ -80,7 +82,7 @@ public class RoomRepoImpl implements RoomRepo {
         if (roomPlayerInfos != null && !roomPlayerInfos.isEmpty()) {
             roomPlayerInfos.forEach(roomPlayerInfo -> this.roomPlayerInfoMapper.delete(roomPlayerInfo));
         }
-        this.roomInfoMapper.deleteByPrimaryKey(roomInfo);
+        this.roomInfoMapper.delete(roomInfo);
         return true;
     }
 }
