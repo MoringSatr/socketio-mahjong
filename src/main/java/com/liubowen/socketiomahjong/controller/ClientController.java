@@ -1,6 +1,8 @@
 package com.liubowen.socketiomahjong.controller;
 
 import com.liubowen.socketiomahjong.service.ClientService;
+import com.liubowen.socketiomahjong.vo.GameConfVo;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,70 +24,74 @@ public class ClientController {
 
     @GetMapping("/login")
     public Map<String, Object> login(@RequestParam("account") String account,
-            @RequestParam("sign") String sign, HttpServletRequest request) {
+                                     @RequestParam("sign") String sign, HttpServletRequest request) {
         return this.clientService.login(account, sign, request).result();
     }
 
     @GetMapping("/create_user")
     public Map<String, Object> createUser(@RequestParam("account") String account,
-                                   @RequestParam("sign") String sign,
-            @RequestParam("name") String name, HttpServletRequest request) {
+                                          @RequestParam("sign") String sign,
+                                          @RequestParam("name") String name, HttpServletRequest request) {
         return this.clientService.createUser(account, sign, name, request).result();
     }
 
     @GetMapping("/create_private_room")
     public Map<String, Object> createPrivateRoom(@RequestParam("account") String account,
-                                          @RequestParam("sign") String sign,
-            @RequestParam("userid") long userId, @RequestParam("name") String name, @RequestParam("conf")String conf, HttpServletRequest request) {
-        return this.clientService.createPrivateRoom(account, sign, userId, name, conf, request).result();
+                                                 @RequestParam("sign") String sign,
+                                                 @RequestParam("conf") String conf, HttpServletRequest request) {
+        JSONObject jsonObject = JSONObject.fromObject(conf);
+        GameConfVo gameConfVo = (GameConfVo) JSONObject.toBean(jsonObject, GameConfVo.class);
+        return this.clientService.createPrivateRoom(account, sign, gameConfVo, request).result();
     }
 
     @GetMapping("/enter_private_room")
-    public Map<String, Object> enterPrivateRoom(@RequestParam("roomid") String roomId,
-                                         @RequestParam("account") String account,
-            @RequestParam("userid") long userId, @RequestParam("name") String name, HttpServletRequest request) {
-        return this.clientService.enterPrivateRoom(roomId, account, userId, name, request).result();
+    public Map<String, Object> enterPrivateRoom(@RequestParam("account") String account,
+                                                @RequestParam("sign") String sign,
+                                                @RequestParam("roomid") String roomId,
+                                                HttpServletRequest request) {
+        return this.clientService.enterPrivateRoom(account, sign, roomId, request).result();
     }
 
     @GetMapping("/get_history_list")
     public Map<String, Object> getHistoryList(@RequestParam("account") String account,
-                                       @RequestParam("sign") String sign,
-            @RequestParam("userid") long userId, HttpServletRequest request) {
-        return this.clientService.getHistoryList(account, sign, userId, request).result();
+                                              @RequestParam("sign") String sign, HttpServletRequest request) {
+        return this.clientService.getHistoryList(account, sign, request).result();
     }
 
     @GetMapping("/get_games_of_room")
-    public Map<String, Object> getGamesOfRoom(@RequestParam("uuid") String uuid, HttpServletRequest request) {
-        return this.clientService.getGamesOfRoom(uuid, request).result();
+    public Map<String, Object> getGamesOfRoom(@RequestParam("account") String account,
+                                              @RequestParam("sign") String sign,
+                                              @RequestParam("uuid") String uuid, HttpServletRequest request) {
+        return this.clientService.getGamesOfRoom(account, sign, uuid, request).result();
     }
 
     @GetMapping("/get_detail_of_game")
     public Map<String, Object> getDetailOfGame(@RequestParam("account") String account,
-                                        @RequestParam("sign") String sign,
-                                        @RequestParam("uuid") String uuid,
-            @RequestParam("index") int index, HttpServletRequest request) {
+                                               @RequestParam("sign") String sign,
+                                               @RequestParam("uuid") String uuid,
+                                               @RequestParam("index") int index, HttpServletRequest request) {
         return this.clientService.getDetailOfGame(account, sign, uuid, index, request).result();
     }
 
     @GetMapping("/get_user_status")
     public Map<String, Object> getUserStatus(@RequestParam("account") String account,
-            @RequestParam("sign") String sign, HttpServletRequest request) {
+                                             @RequestParam("sign") String sign, HttpServletRequest request) {
         return this.clientService.getUserStatus(account, sign, request).result();
     }
 
     @GetMapping("/get_message")
     public Map<String, Object> getMessage(@RequestParam("account") String account,
-                                   @RequestParam("sign") String sign,
-                                   @RequestParam("type") String type,
-            @RequestParam("version") String version, HttpServletRequest request) {
+                                          @RequestParam("sign") String sign,
+                                          @RequestParam("type") String type,
+                                          @RequestParam("version") String version, HttpServletRequest request) {
         return this.clientService.getMessage(account, sign, type, version, request).result();
     }
 
     @GetMapping("/is_server_online")
     public Map<String, Object> isServerOnline(@RequestParam("account") String account,
-                                       @RequestParam("sign") String sign,
-                                       @RequestParam("ip") String ip,
-            @RequestParam("port") int port, HttpServletRequest request) {
+                                              @RequestParam("sign") String sign,
+                                              @RequestParam("ip") String ip,
+                                              @RequestParam("port") int port, HttpServletRequest request) {
         return this.clientService.isServerOnline(account, sign, ip, port, request).result();
     }
 

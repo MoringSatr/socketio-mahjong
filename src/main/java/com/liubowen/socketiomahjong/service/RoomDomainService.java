@@ -1,7 +1,7 @@
 package com.liubowen.socketiomahjong.service;
 
 import com.liubowen.socketiomahjong.common.ResultEntity;
-import com.liubowen.socketiomahjong.domain.room.Room;
+import com.liubowen.socketiomahjong.vo.GameConfVo;
 
 /**
  * @author liubowen
@@ -10,7 +10,7 @@ import com.liubowen.socketiomahjong.domain.room.Room;
  */
 public interface RoomDomainService {
 
-    ResultEntity createRoom(String account, long userId, String conf);
+    ResultEntity createRoom(String account, long userId, GameConfVo conf);
 
     ResultEntity enterRoom(long userId, String name,  String roomId);
 }

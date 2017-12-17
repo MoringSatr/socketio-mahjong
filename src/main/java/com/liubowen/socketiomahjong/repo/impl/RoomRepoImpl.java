@@ -39,14 +39,14 @@ public class RoomRepoImpl implements RoomRepo {
         }
         RoomConfigInfo roomConfigInfo = this.roomConfigInfoMapper.selectByPrimaryKey(roomId);
         List<RoomPlayerInfo> roomPlayerInfos = this.roomPlayerInfoMapper.findRoomPlayerInfosByRoomId(roomId);
-        roomInfo.setRoomConfig(roomConfigInfo);
+        roomInfo.setRoomConfigInfo(roomConfigInfo);
         roomInfo.setRoomPlayerInfos(roomPlayerInfos);
         return roomInfo;
     }
 
     @Override
     public boolean save(RoomInfo roomInfo) {
-        RoomConfigInfo roomConfigInfo = roomInfo.getRoomConfig();
+        RoomConfigInfo roomConfigInfo = roomInfo.getRoomConfigInfo();
         List<RoomPlayerInfo> roomPlayerInfos = roomInfo.getRoomPlayerInfos();
         if (roomConfigInfo != null) {
             this.roomConfigInfoMapper.insertSelective(roomConfigInfo);
@@ -60,7 +60,7 @@ public class RoomRepoImpl implements RoomRepo {
 
     @Override
     public boolean update(RoomInfo roomInfo) {
-        RoomConfigInfo roomConfigInfo = roomInfo.getRoomConfig();
+        RoomConfigInfo roomConfigInfo = roomInfo.getRoomConfigInfo();
         List<RoomPlayerInfo> roomPlayerInfos = roomInfo.getRoomPlayerInfos();
         if (roomConfigInfo != null) {
             this.roomConfigInfoMapper.updateByPrimaryKeySelective(roomConfigInfo);
@@ -74,7 +74,7 @@ public class RoomRepoImpl implements RoomRepo {
 
     @Override
     public boolean delete(RoomInfo roomInfo) {
-        RoomConfigInfo roomConfigInfo = roomInfo.getRoomConfig();
+        RoomConfigInfo roomConfigInfo = roomInfo.getRoomConfigInfo();
         List<RoomPlayerInfo> roomPlayerInfos = roomInfo.getRoomPlayerInfos();
         if (roomConfigInfo != null) {
             this.roomConfigInfoMapper.delete(roomConfigInfo);

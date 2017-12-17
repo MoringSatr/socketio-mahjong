@@ -1,6 +1,8 @@
 package com.liubowen.socketiomahjong.util.mybatis.typeHandler;
 
 import com.google.common.collect.Lists;
+import com.liubowen.socketiomahjong.util.Punctuation;
+import com.liubowen.socketiomahjong.util.conver.ListConver;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
@@ -18,49 +20,31 @@ import java.util.List;
  * @date 2017/12/14 15:22
  * @description 该ListTypeHandler 只能适用于简单的数据类型，long,int,String[中不许'，'],boolean,byte
  */
-@MappedJdbcTypes({ JdbcType.VARCHAR })
-@MappedTypes({ List.class })
+@MappedJdbcTypes({JdbcType.VARCHAR})
+@MappedTypes({List.class})
 public class ListTypeHandler extends BaseTypeHandler<List> {
 
-    public static final String MAJOR_DELIMITER = ",";// 默认的分隔符
-
     @Override
-    public void setNonNullParameter(PreparedStatement ps, int i, List parameter, JdbcType jdbcType) throws SQLException {
-        StringBuilder builder = new StringBuilder();
-        parameter.forEach(o -> {
-            builder.append(o);
-            builder.append(MAJOR_DELIMITER);
-        });
-        ps.setString(i, builder.substring(0, (builder.length() - 1)));
+    public void setNonNullParameter(PreparedStatement preparedStatement, int i, List parameter, JdbcType jdbcType) throws SQLException {
+        preparedStatement.setString(i, ListConver.listConverToString(parameter));
     }
 
     @Override
-    public List getNullableResult(ResultSet rs, String columnName) throws SQLException {
-        String listsStr = rs.getString(columnName);
-        return stringToList(listsStr);
+    public List getNullableResult(ResultSet resultSet, String columnName) throws SQLException {
+        String listsStr = resultSet.getString(columnName);
+        return ListConver.stringConverToList(listsStr);
     }
 
     @Override
-    public List getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
-        String listsStr = rs.getString(columnIndex);
-        return stringToList(listsStr);
+    public List getNullableResult(ResultSet resultSet, int columnIndex) throws SQLException {
+        String listsStr = resultSet.getString(columnIndex);
+        return ListConver.stringConverToList(listsStr);
     }
 
     @Override
-    public List getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
-        String listsStr = cs.getString(columnIndex);
-        return stringToList(listsStr);
+    public List getNullableResult(CallableStatement callableStatement, int columnIndex) throws SQLException {
+        String listsStr = callableStatement.getString(columnIndex);
+        return ListConver.stringConverToList(listsStr);
     }
 
-    private List stringToList(String value) {
-        if (StringUtils.isBlank(value)) {
-            return Lists.newArrayList();
-        }
-        List list = Lists.newArrayList();
-        String[] listStrs = value.split(MAJOR_DELIMITER);
-        for (String listStr : listStrs) {
-            list.add((Object) listStr);
-        }
-        return list;
-    }
 }

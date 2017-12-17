@@ -14,9 +14,9 @@ import com.liubowen.socketiomahjong.util.encode.Md5Util;
 import com.liubowen.socketiomahjong.util.http.HttpUtil;
 import com.liubowen.socketiomahjong.util.result.ResultEntityUtil;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -155,7 +155,7 @@ public class AccountServiceImpl implements AccountService {
         params.put("code", code);
         params.put("grant_type", grantType);
         String result = HttpUtil.sendGet(url, params);
-        JSONObject jsonObject = new JSONObject(result);
+        JSONObject jsonObject = JSONObject.fromObject(result);
         return jsonObject;
     }
 
@@ -165,7 +165,7 @@ public class AccountServiceImpl implements AccountService {
         params.put("access_token", accessToken);
         params.put("openid", openId);
         String result = HttpUtil.sendGet(url, params);
-        JSONObject jsonObject = new JSONObject(result);
+        JSONObject jsonObject = JSONObject.fromObject(result);
         return jsonObject;
     }
 

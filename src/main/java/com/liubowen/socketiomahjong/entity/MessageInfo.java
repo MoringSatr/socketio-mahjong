@@ -14,12 +14,12 @@ import javax.persistence.Table;
 @Table(name = "t_message")
 public class MessageInfo {
 
-    @Column(name = "type")
+    @Column(name = "`type`")
     private String type;
 
     @Column(name = "msg")
     private String msg;
 
-    @Column(name = "version")
+    @Column(name = "`version`")
     private String version;
 }

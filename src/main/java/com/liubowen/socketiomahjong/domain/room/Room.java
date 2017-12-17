@@ -2,6 +2,7 @@ package com.liubowen.socketiomahjong.domain.room;
 
 import com.liubowen.socketiomahjong.common.Saveable;
 import com.liubowen.socketiomahjong.domain.game.*;
+import com.liubowen.socketiomahjong.entity.RoomConfigInfo;
 import com.liubowen.socketiomahjong.entity.RoomInfo;
 import com.liubowen.socketiomahjong.entity.RoomPlayerInfo;
 import lombok.Getter;
@@ -34,7 +35,7 @@ public class Room implements Saveable {
     /**
      * 房间配置信息
      */
-    private RoomConfig conf;
+    private RoomConfigInfo conf;
 
     /**
      * 房间游戏信息
@@ -49,8 +50,6 @@ public class Room implements Saveable {
         this.nextButton = roomInfo.getNextButton();
 
         this.seats = new Seats(roomInfo);
-//        this.conf = new RoomConfig().decode(roomInfo.getBaseInfo());
-//        this.conf = roomInfo.getRoomConfig();
         initGameManager();
     }
 

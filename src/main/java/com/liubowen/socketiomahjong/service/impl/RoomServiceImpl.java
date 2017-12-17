@@ -23,8 +23,9 @@ public class RoomServiceImpl implements RoomService {
         String id = clientip + ":" + clientport;
         if(this.serverMap.containsKey(id)) {
             ServerInfo serverInfo = this.serverMap.get(id);
-
         }
         return null;
     }
+
+
 }

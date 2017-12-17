@@ -2,8 +2,9 @@ package com.liubowen.socketiomahjong.service.impl;
 
 import com.liubowen.socketiomahjong.common.ResultEntity;
 import com.liubowen.socketiomahjong.constant.Constant;
-import com.liubowen.socketiomahjong.domain.room.Room;
+import com.liubowen.socketiomahjong.entity.MessageInfo;
 import com.liubowen.socketiomahjong.entity.UserInfo;
+import com.liubowen.socketiomahjong.mapper.MessageInfoMapper;
 import com.liubowen.socketiomahjong.mapper.RoomInfoMapper;
 import com.liubowen.socketiomahjong.mapper.UserInfoMapper;
 import com.liubowen.socketiomahjong.service.ClientService;
@@ -12,6 +13,7 @@ import com.liubowen.socketiomahjong.service.UserDomainService;
 import com.liubowen.socketiomahjong.util.encode.Md5Util;
 import com.liubowen.socketiomahjong.util.result.ResultEntityUtil;
 import com.liubowen.socketiomahjong.util.time.TimeUtil;
+import com.liubowen.socketiomahjong.vo.GameConfVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,9 @@ public class ClientServiceImpl implements ClientService {
     @Autowired
     private RoomDomainService roomDomainService;
 
+    @Autowired
+    private MessageInfoMapper messageInfoMapper;
+
     private boolean checkAccount(String account, String sign, String ip) {
         if (StringUtils.isEmpty(account) || StringUtils.isEmpty(sign)) {
             return false;
@@ -57,7 +62,7 @@ public class ClientServiceImpl implements ClientService {
         }
         UserInfo userInfo = this.userInfoMapper.findUserInfoByAccount(account);
         if (userInfo == null) {
-            return ResultEntityUtil.ok();
+            return ResultEntityUtil.err("user not exist.");
         }
         ResultEntity resultEntity = ResultEntityUtil.ok();
         resultEntity.add("account", userInfo.getAccount());
@@ -98,7 +103,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ResultEntity createPrivateRoom(String account, String sign, long userId, String name, String conf, HttpServletRequest request) {
+    public ResultEntity createPrivateRoom(String account, String sign, GameConfVo conf, HttpServletRequest request) {
         String ip = Constant.getIpByRequest(request);
         if (!checkAccount(account, sign, ip)) {
             return ResultEntityUtil.err(2, "login failed.");
@@ -109,9 +114,10 @@ public class ClientServiceImpl implements ClientService {
         }
         boolean isRoomExist = this.roomInfoMapper.isRoomExist(userInfo.getRoomId());
         if (isRoomExist) {
-            return ResultEntityUtil.err(-1, "user is playing in room now.");
+            return ResultEntityUtil.err("user is playing in room now.");
         }
-
+        long userId = userInfo.getUserId();
+        String name = userInfo.getName();
         ResultEntity createRoomResult = this.roomDomainService.createRoom(account, userId, conf);
         String roomId = createRoomResult.get("roomId").toString();
         if (createRoomResult.ok() && StringUtils.isBlank(roomId)) {
@@ -134,21 +140,33 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ResultEntity enterPrivateRoom(String roomId, String account, long userId, String name, HttpServletRequest request) {
-        return null;
-    }
-
-    @Override
-    public ResultEntity getHistoryList(String account, String sign, long userId, HttpServletRequest request) {
+    public ResultEntity enterPrivateRoom(String account, String sign, String roomId, HttpServletRequest request) {
         String ip = Constant.getIpByRequest(request);
         if (!checkAccount(account, sign, ip)) {
             return ResultEntityUtil.err(2, "login failed.");
         }
-        return null;
+        UserInfo userInfo = this.userInfoMapper.findUserInfoByAccount(account);
+        if (userInfo == null) {
+            return ResultEntityUtil.err("system error");
+        }
+        boolean isRoomExist = this.roomInfoMapper.isRoomExist(userInfo.getRoomId());
+        if (isRoomExist) {
+            return ResultEntityUtil.err("user is playing in room now.");
+        }
+        return ResultEntityUtil.ok();
     }
 
     @Override
-    public ResultEntity getGamesOfRoom(String uuid, HttpServletRequest request) {
+    public ResultEntity getHistoryList(String account, String sign, HttpServletRequest request) {
+        String ip = Constant.getIpByRequest(request);
+        if (!checkAccount(account, sign, ip)) {
+            return ResultEntityUtil.err("login failed.");
+        }
+        return ResultEntityUtil.ok();
+    }
+
+    @Override
+    public ResultEntity getGamesOfRoom(String account, String sign, String uuid, HttpServletRequest request) {
         return null;
     }
 
@@ -156,7 +174,7 @@ public class ClientServiceImpl implements ClientService {
     public ResultEntity getDetailOfGame(String account, String sign, String uuid, int index, HttpServletRequest request) {
         String ip = Constant.getIpByRequest(request);
         if (!checkAccount(account, sign, ip)) {
-            return ResultEntityUtil.err(2, "login failed.");
+            return ResultEntityUtil.err("login failed.");
         }
         return null;
     }
@@ -165,10 +183,10 @@ public class ClientServiceImpl implements ClientService {
     public ResultEntity getUserStatus(String account, String sign, HttpServletRequest request) {
         String ip = Constant.getIpByRequest(request);
         if (!checkAccount(account, sign, ip)) {
-            return ResultEntityUtil.err(2, "login failed.");
+            return ResultEntityUtil.err("login failed.");
         }
         UserInfo userInfo = this.userInfoMapper.findUserInfoByAccount(account);
-        if(userInfo == null) {
+        if (userInfo == null) {
             return ResultEntityUtil.err("user not find.");
         }
         ResultEntity resultEntity = ResultEntityUtil.ok();
@@ -180,17 +198,28 @@ public class ClientServiceImpl implements ClientService {
     public ResultEntity getMessage(String account, String sign, String type, String version, HttpServletRequest request) {
         String ip = Constant.getIpByRequest(request);
         if (!checkAccount(account, sign, ip)) {
-            return ResultEntityUtil.err(2, "login failed.");
+            return ResultEntityUtil.err("login failed.");
         }
+        MessageInfo messageInfo = this.messageInfoMapper.findMessageInfoByTypeAndVersion(type, version);
         ResultEntity resultEntity = ResultEntityUtil.ok();
-        resultEntity.add("msg", "我是刘博文");
-        resultEntity.add("version", Constant.VERSION);
+        if (messageInfo == null) {
+            return ResultEntityUtil.err("get message failed.");
+        }
+        resultEntity.add("msg", messageInfo.getMsg());
+        resultEntity.add("version", messageInfo.getVersion());
         return resultEntity;
     }
 
     @Override
     public ResultEntity isServerOnline(String account, String sign, String ip, int port, HttpServletRequest request) {
-        return null;
+        //  String ip = Constant.getIpByRequest(request);
+        if (!checkAccount(account, sign, ip)) {
+            return ResultEntityUtil.err("login failed.");
+        }
+        ResultEntity resultEntity = ResultEntityUtil.ok();
+        //  TODO
+        resultEntity.add("isonline", true);
+        return resultEntity;
     }
 
 }

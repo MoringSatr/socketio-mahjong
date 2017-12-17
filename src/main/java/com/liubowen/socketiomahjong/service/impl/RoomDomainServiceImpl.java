@@ -1,8 +1,8 @@
 package com.liubowen.socketiomahjong.service.impl;
 
 import com.liubowen.socketiomahjong.common.ResultEntity;
-import com.liubowen.socketiomahjong.domain.room.Room;
 import com.liubowen.socketiomahjong.service.RoomDomainService;
+import com.liubowen.socketiomahjong.vo.GameConfVo;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class RoomDomainServiceImpl implements RoomDomainService {
 
     @Override
-    public ResultEntity createRoom(String account, long userId, String conf) {
+    public ResultEntity createRoom(String account, long userId, GameConfVo conf) {
         return null;
     }
 

@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Data
+@lombok.NoArgsConstructor
 @Table(name = "t_users")
 public class UserInfo {
 
@@ -53,9 +54,6 @@ public class UserInfo {
     /** 用户历史记录 */
     @Column(name = "history")
     private String history;
-
-    public UserInfo() {
-    }
 
     public UserInfo(String account, String name, Integer sex, String headImg, Integer coins, Integer gems) {
         this.account = account;

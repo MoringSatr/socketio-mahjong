@@ -1,6 +1,7 @@
 package com.liubowen.socketiomahjong.service;
 
 import com.liubowen.socketiomahjong.common.ResultEntity;
+import com.liubowen.socketiomahjong.vo.GameConfVo;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,13 +16,13 @@ public interface ClientService {
 
     ResultEntity createUser(String account, String sign, String name, HttpServletRequest request);
 
-    ResultEntity createPrivateRoom(String account, String sign, long userId, String name, String conf, HttpServletRequest request);
+    ResultEntity createPrivateRoom(String account, String sign, GameConfVo conf, HttpServletRequest request);
 
-    ResultEntity enterPrivateRoom(String roomId, String account, long userId, String name, HttpServletRequest request);
+    ResultEntity enterPrivateRoom(String account, String sign, String roomId, HttpServletRequest request);
 
-    ResultEntity getHistoryList(String account, String sign, long userId, HttpServletRequest request);
+    ResultEntity getHistoryList(String account, String sign, HttpServletRequest request);
 
-    ResultEntity getGamesOfRoom(String uuid, HttpServletRequest request);
+    ResultEntity getGamesOfRoom(String account, String sign, String uuid, HttpServletRequest request);
 
     ResultEntity getDetailOfGame(String account, String sign, String uuid, int index, HttpServletRequest request);
 

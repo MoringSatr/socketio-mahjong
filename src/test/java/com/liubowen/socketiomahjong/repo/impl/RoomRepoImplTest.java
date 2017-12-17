@@ -1,6 +1,7 @@
 package com.liubowen.socketiomahjong.repo.impl;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.liubowen.socketiomahjong.domain.game.GameType;
 import com.liubowen.socketiomahjong.entity.RoomConfigInfo;
 import com.liubowen.socketiomahjong.entity.RoomInfo;
@@ -13,8 +14,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import java.util.List;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -29,17 +30,22 @@ public class RoomRepoImplTest {
 
     @Test
     public void findRoomInfoByRoomId() {
-        RoomInfo roomInfo = this.roomRepo.findRoomInfoByRoomId("4");
+        RoomInfo roomInfo = this.roomRepo.findRoomInfoByRoomId("5");
         log.info("roomInfo : {}", roomInfo);
     }
 
     @Test
     public void save() {
-        String roomId = "4";
+        String roomId = "5";
         RoomConfigInfo roomConfigInfo = new RoomConfigInfo();
         roomConfigInfo.setRoomId(roomId);
         roomConfigInfo.setGameType(GameType.KWX);
-
+        List<Integer> mahjongs = Lists.newArrayList(1, 2, 3, 4, 5);
+        roomConfigInfo.setMahjongs(mahjongs);
+        Map<Integer, List<Integer>> integerListMap = Maps.newHashMap();
+        integerListMap.put(1, Lists.newArrayList(1, 2, 3));
+        integerListMap.put(2, Lists.newArrayList(11, 22, 33));
+        roomConfigInfo.setGameSeats(integerListMap);
         RoomInfo roomInfo = new RoomInfo(roomId, "127.0.0.1", 9009, roomConfigInfo);
 
         RoomPlayerInfo roomPlayerInfo1 = new RoomPlayerInfo(11111, "张一", 100, roomId);
@@ -54,10 +60,14 @@ public class RoomRepoImplTest {
 
     @Test
     public void update() {
-        RoomInfo roomInfo = this.roomRepo.findRoomInfoByRoomId("4");
+        RoomInfo roomInfo = this.roomRepo.findRoomInfoByRoomId("5");
         log.info("old roomInfo : {}", roomInfo);
-        RoomConfigInfo roomConfigInfo = roomInfo.getRoomConfig();
+        RoomConfigInfo roomConfigInfo = roomInfo.getRoomConfigInfo();
         roomConfigInfo.setButton(11);
+        Map<Integer, List<Integer>> integerListMap = Maps.newHashMap();
+        integerListMap.put(1, Lists.newArrayList(1, 2, 3));
+        integerListMap.put(2, Lists.newArrayList(11, 22, 33));
+        roomConfigInfo.setGameSeats(integerListMap);
         List<RoomPlayerInfo> roomPlayerInfos = roomInfo.getRoomPlayerInfos();
         roomPlayerInfos.forEach(roomPlayerInfo -> roomPlayerInfo.setScore(roomPlayerInfo.getScore() + 10));
         this.roomRepo.update(roomInfo);
@@ -66,8 +76,9 @@ public class RoomRepoImplTest {
 
     @Test
     public void delete() {
-        RoomInfo roomInfo = this.roomRepo.findRoomInfoByRoomId("4");
+        RoomInfo roomInfo = this.roomRepo.findRoomInfoByRoomId("5");
         log.info("old roomInfo : {}", roomInfo);
         this.roomRepo.delete(roomInfo);
     }
+
 }
