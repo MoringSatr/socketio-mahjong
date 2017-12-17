@@ -9,12 +9,13 @@ import javax.persistence.*;
  * @description 房间中的玩家信息
  */
 @Data
+@lombok.NoArgsConstructor
 @Table(name = "room_player")
 public class RoomPlayerInfo {
 
     /** 玩家id */
     @Id
-    @Column(name = "userId")
+    @Column(name = "user_id")
     private long userId;
 
     /** 玩家名字 */
@@ -32,9 +33,6 @@ public class RoomPlayerInfo {
     /** 房间id */
     @Column(name = "room_id")
     private String roomId;
-
-    public RoomPlayerInfo() {
-    }
 
     public RoomPlayerInfo(long userId, String name, int score) {
         this.userId = userId;

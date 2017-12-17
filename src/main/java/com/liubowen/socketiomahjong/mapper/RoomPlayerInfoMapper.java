@@ -19,6 +19,4 @@ public interface RoomPlayerInfoMapper extends MyMapper<RoomPlayerInfo> {
     @Select("SELECT * FROM room_player WHERE room_id=#{roomId}")
     List<RoomPlayerInfo> findRoomPlayerInfosByRoomId(@Param("roomId") String roomId);
 
-    @Select("SELECT * FROM room_player WHERE userId=#{userId}")
-    List<RoomPlayerInfo> findRoomPlayerInfosByUserId(@Param("userId") long userId);
 }

@@ -19,7 +19,7 @@ public interface ClientService {
 
     ResultEntity enterPrivateRoom(String roomId, String account, long userId, String name, HttpServletRequest request);
 
-    ResultEntity getHistoryList(String account, String sign, long userId, HttpServletRequest request);
+    ResultEntity getHistoryList(String account, String sign, HttpServletRequest request);
 
     ResultEntity getGamesOfRoom(String uuid, HttpServletRequest request);
 

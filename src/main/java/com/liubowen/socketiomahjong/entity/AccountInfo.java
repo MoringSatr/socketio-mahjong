@@ -13,6 +13,7 @@ import javax.persistence.Table;
  */
 @Data
 @Table(name = "t_accounts")
+@lombok.NoArgsConstructor
 public class AccountInfo {
 
     @Id

@@ -1,7 +1,6 @@
 package com.liubowen.socketiomahjong.entity;
 
 import com.google.common.collect.Lists;
-import com.liubowen.socketiomahjong.domain.room.RoomConfig;
 import com.liubowen.socketiomahjong.util.time.TimeUtil;
 import lombok.Data;
 
@@ -14,6 +13,7 @@ import java.util.List;
  * @description
  */
 @Data
+@lombok.NoArgsConstructor
 @Table(name = "t_rooms")
 public class RoomInfo {
 
@@ -43,12 +43,9 @@ public class RoomInfo {
     private List<RoomPlayerInfo> roomPlayerInfos;
 
     @Transient
-    private RoomConfigInfo roomConfig;
+    private RoomConfigInfo roomConfigInfo;
 
-    public RoomInfo() {
-    }
-
-    public RoomInfo(String id, String ip, int port, RoomConfig roomConfig) {
+    public RoomInfo(String id, String ip, int port, RoomConfigInfo roomConfigInfo) {
         this.id = id;
         this.createTime = TimeUtil.currentTimeMillis();
         this.numOfTurns = 0;
@@ -56,18 +53,7 @@ public class RoomInfo {
         this.ip = ip;
         this.port = port;
         this.roomPlayerInfos = Lists.newArrayList();
-//        this.roomConfig = roomConfig;
-    }
-
-    public RoomInfo(String id, String ip, int port, RoomConfigInfo roomConfig) {
-        this.id = id;
-        this.createTime = TimeUtil.currentTimeMillis();
-        this.numOfTurns = 0;
-        this.nextButton = 0;
-        this.ip = ip;
-        this.port = port;
-        this.roomPlayerInfos = Lists.newArrayList();
-        this.roomConfig = roomConfig;
+        this.roomConfigInfo = roomConfigInfo;
     }
 
 }

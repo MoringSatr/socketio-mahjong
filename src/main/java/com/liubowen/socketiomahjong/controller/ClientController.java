@@ -49,9 +49,8 @@ public class ClientController {
 
     @GetMapping("/get_history_list")
     public Map<String, Object> getHistoryList(@RequestParam("account") String account,
-                                       @RequestParam("sign") String sign,
-            @RequestParam("userid") long userId, HttpServletRequest request) {
-        return this.clientService.getHistoryList(account, sign, userId, request).result();
+                                       @RequestParam("sign") String sign, HttpServletRequest request) {
+        return this.clientService.getHistoryList(account, sign, request).result();
     }
 
     @GetMapping("/get_games_of_room")
