@@ -38,14 +38,20 @@ public class RoomRepoImpl implements RoomRepo {
             return null;
         }
         RoomConfigInfo roomConfigInfo = this.roomConfigInfoMapper.selectByPrimaryKey(roomId);
+        if (roomConfigInfo != null) {
+            roomInfo.setRoomConfigInfo(roomConfigInfo);
+        }
+
         List<RoomPlayerInfo> roomPlayerInfos = this.roomPlayerInfoMapper.findRoomPlayerInfosByRoomId(roomId);
-        roomInfo.setRoomConfigInfo(roomConfigInfo);
-        roomInfo.setRoomPlayerInfos(roomPlayerInfos);
+        if (roomPlayerInfos != null) {
+            roomInfo.setRoomPlayerInfos(roomPlayerInfos);
+        }
+
         return roomInfo;
     }
 
     @Override
-    public boolean save(RoomInfo roomInfo) {
+    public void save(RoomInfo roomInfo) {
         RoomConfigInfo roomConfigInfo = roomInfo.getRoomConfigInfo();
         List<RoomPlayerInfo> roomPlayerInfos = roomInfo.getRoomPlayerInfos();
         if (roomConfigInfo != null) {
@@ -55,34 +61,44 @@ public class RoomRepoImpl implements RoomRepo {
             roomPlayerInfos.forEach(roomPlayerInfo -> this.roomPlayerInfoMapper.insertSelective(roomPlayerInfo));
         }
         this.roomInfoMapper.insert(roomInfo);
-        return true;
     }
 
     @Override
-    public boolean update(RoomInfo roomInfo) {
+    public void update(RoomInfo roomInfo) {
+        if (roomInfo == null) {
+            return;
+        }
+
         RoomConfigInfo roomConfigInfo = roomInfo.getRoomConfigInfo();
-        List<RoomPlayerInfo> roomPlayerInfos = roomInfo.getRoomPlayerInfos();
+
         if (roomConfigInfo != null) {
             this.roomConfigInfoMapper.updateByPrimaryKeySelective(roomConfigInfo);
         }
+
+        List<RoomPlayerInfo> roomPlayerInfos = roomInfo.getRoomPlayerInfos();
         if (roomPlayerInfos != null && !roomPlayerInfos.isEmpty()) {
             roomPlayerInfos.forEach(roomPlayerInfo -> this.roomPlayerInfoMapper.updateByPrimaryKeySelective(roomPlayerInfo));
         }
+
         this.roomInfoMapper.updateByPrimaryKeySelective(roomInfo);
-        return true;
     }
 
     @Override
-    public boolean delete(RoomInfo roomInfo) {
+    public void delete(RoomInfo roomInfo) {
+        if (roomInfo == null) {
+            return;
+        }
+
         RoomConfigInfo roomConfigInfo = roomInfo.getRoomConfigInfo();
-        List<RoomPlayerInfo> roomPlayerInfos = roomInfo.getRoomPlayerInfos();
         if (roomConfigInfo != null) {
             this.roomConfigInfoMapper.delete(roomConfigInfo);
         }
+
+        List<RoomPlayerInfo> roomPlayerInfos = roomInfo.getRoomPlayerInfos();
         if (roomPlayerInfos != null && !roomPlayerInfos.isEmpty()) {
             roomPlayerInfos.forEach(roomPlayerInfo -> this.roomPlayerInfoMapper.delete(roomPlayerInfo));
         }
+
         this.roomInfoMapper.delete(roomInfo);
-        return true;
     }
 }

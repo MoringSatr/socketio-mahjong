@@ -7,9 +7,9 @@ package com.liubowen.socketiomahjong.common;
  */
 public interface ServiceDataRepo<T> {
 
-    boolean save(T t);
+    void save(T t);
 
-    boolean update(T t);
+    void update(T t);
 
-    boolean delete(T t);
+    void delete(T t);
 }

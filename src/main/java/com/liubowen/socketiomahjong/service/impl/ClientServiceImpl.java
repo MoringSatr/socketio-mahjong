@@ -118,13 +118,17 @@ public class ClientServiceImpl implements ClientService {
         }
         long userId = userInfo.getUserId();
         String name = userInfo.getName();
+
         ResultEntity createRoomResult = this.roomDomainService.createRoom(account, userId, conf);
+        if (!createRoomResult.containsKey("roomId")) {
+            return ResultEntityUtil.err("create failed.");
+        }
         String roomId = createRoomResult.get("roomId").toString();
         if (createRoomResult.ok() && StringUtils.isBlank(roomId)) {
             ResultEntity enterRoomResult = this.roomDomainService.enterRoom(userId, name, roomId);
             Object enterInfo = enterRoomResult.get("enterInfo");
             if (enterInfo != null) {
-                //TODO
+                // TODO
                 ResultEntity result = ResultEntityUtil.ok();
                 result.add("roomid", roomId);
                 result.add("ip", ip);
@@ -212,12 +216,12 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ResultEntity isServerOnline(String account, String sign, String ip, int port, HttpServletRequest request) {
-        //  String ip = Constant.getIpByRequest(request);
+        // String ip = Constant.getIpByRequest(request);
         if (!checkAccount(account, sign, ip)) {
             return ResultEntityUtil.err("login failed.");
         }
         ResultEntity resultEntity = ResultEntityUtil.ok();
-        //  TODO
+        // TODO
         resultEntity.add("isonline", true);
         return resultEntity;
     }

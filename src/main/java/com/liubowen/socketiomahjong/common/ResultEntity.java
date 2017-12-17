@@ -76,4 +76,8 @@ public class ResultEntity {
         return this.params.get(key);
     }
 
+    public boolean containsKey(String key) {
+        return this.params.containsKey(key);
+    }
+
 }

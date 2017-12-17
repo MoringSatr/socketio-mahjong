@@ -9,6 +9,7 @@ import com.liubowen.socketiomahjong.domain.user.UserLocation;
 import com.liubowen.socketiomahjong.entity.RoomConfigInfo;
 import com.liubowen.socketiomahjong.entity.RoomInfo;
 import com.liubowen.socketiomahjong.entity.RoomPlayerInfo;
+import com.liubowen.socketiomahjong.vo.GameConfVo;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -93,38 +94,39 @@ public class RoomContext implements Storageable, Initializeable {
         this.creatingRoomIds.add(roomId);
     }
 
-    public Room createRoom(RoomConfigInfo roomConfigInfo, int gems, String ip, int port) {
-        if (roomConfigInfo == null) {
+    public Room createRoom(GameConfVo gameConfVo, int gems, String ip, int port) {
+        if (gameConfVo == null) {
             return null;
         }
 
-        if (roomConfigInfo.getDifen() < 0 || roomConfigInfo.getDifen() > DI_FEN.length) {
+        if (gameConfVo.getDifen() < 0 || gameConfVo.getDifen() > DI_FEN.length) {
             return null;
         }
 
-        if (roomConfigInfo.getZimo() < 0 || roomConfigInfo.getZimo() > 2) {
+        if (gameConfVo.getZimo() < 0 || gameConfVo.getZimo() > 2) {
             return null;
         }
 
-        if (roomConfigInfo.getZuidafanshu() < 0 || roomConfigInfo.getZuidafanshu() > MAX_FAN.length) {
+        if (gameConfVo.getZuidafanshu() < 0 || gameConfVo.getZuidafanshu() > MAX_FAN.length) {
             return null;
         }
 
-        if (roomConfigInfo.getJushuxuanze() < 0 || roomConfigInfo.getJushuxuanze() > JU_SHU.length) {
+        if (gameConfVo.getJushuxuanze() < 0 || gameConfVo.getJushuxuanze() > JU_SHU.length) {
             return null;
         }
 
-        int cost = JU_SHU_COST[roomConfigInfo.getJushuxuanze()];
+        int cost = JU_SHU_COST[gameConfVo.getJushuxuanze()];
         if (cost > gems) {
             return null;
         }
-        return this.fnCreate(ip, port, roomConfigInfo);
+        return this.fnCreate(ip, port, gameConfVo);
     }
 
-    private Room fnCreate(String ip, int port, RoomConfigInfo roomConfigInfo) {
+    private Room fnCreate(String ip, int port, GameConfVo gameConfVo) {
         String roomId = generateRoomId();
+        RoomConfigInfo roomConfigInfo = new RoomConfigInfo();
         if (this.creatingRoomIds.contains(roomId)) {
-            this.fnCreate(ip, port, roomConfigInfo);
+            this.fnCreate(ip, port, null);
         }
         RoomInfo roomInfo = new RoomInfo(roomId, ip, port, roomConfigInfo);
         Room room = this.initRoom(roomInfo);
