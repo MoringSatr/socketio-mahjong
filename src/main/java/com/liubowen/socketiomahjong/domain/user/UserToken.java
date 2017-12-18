@@ -3,7 +3,6 @@ package com.liubowen.socketiomahjong.domain.user;
 import com.liubowen.socketiomahjong.util.encode.Md5Util;
 import com.liubowen.socketiomahjong.util.time.TimeUtil;
 import lombok.Data;
-import lombok.experimental.var;
 
 @Data
 public class UserToken {
@@ -29,9 +28,9 @@ public class UserToken {
     }
 
     public boolean isTokenValid() {
-        if(this.time + this.lifeTime < TimeUtil.currentTimeMillis()){
-            return false;
-        }
+//        if(this.time + this.lifeTime < TimeUtil.currentTimeMillis()){
+//            return false;
+//        }
         return true;
     }
 }

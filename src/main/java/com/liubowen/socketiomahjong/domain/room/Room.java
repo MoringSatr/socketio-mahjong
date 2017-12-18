@@ -21,6 +21,7 @@ public class Room implements Saveable {
     @Getter
     private String id;
 
+    @Getter
     private int numOfGames;
 
     private long createTime;
@@ -35,6 +36,7 @@ public class Room implements Saveable {
     /**
      * 房间配置信息
      */
+    @Getter
     private RoomConfigInfo conf;
 
     /**
@@ -48,7 +50,7 @@ public class Room implements Saveable {
         this.numOfGames = roomInfo.getNumOfTurns();
         this.createTime = roomInfo.getCreateTime();
         this.nextButton = roomInfo.getNextButton();
-
+        this.conf = roomInfo.getRoomConfigInfo();
         this.seats = new Seats(roomInfo);
         initGameManager();
     }

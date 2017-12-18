@@ -1,7 +1,12 @@
 package com.liubowen.socketiomahjong.entity;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.liubowen.socketiomahjong.domain.game.GameType;
+import com.liubowen.socketiomahjong.vo.GameConfVo;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -15,7 +20,8 @@ import java.util.Map;
  * @description
  */
 @Data
-@lombok.NoArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "room_config")
 public class RoomConfigInfo {
 
@@ -48,10 +54,10 @@ public class RoomConfigInfo {
     private int zimo;
 
     @Column(name = "`jiangdui`")
-    private int jiangdui;
+    private boolean jiangdui;
 
     @Column(name = "`huansanzhang`")
-    private int huansanzhang;
+    private boolean huansanzhang;
 
     @Column(name = "`zuidafanshu`")
     private int zuidafanshu;
@@ -63,9 +69,29 @@ public class RoomConfigInfo {
     private int dianganghua;
 
     @Column(name = "`menqing`")
-    private int menqing;
+    private boolean menqing;
 
     @Column(name = "`tiandihu`")
-    private int tiandihu;
+    private boolean tiandihu;
+
+
+    public RoomConfigInfo build(GameConfVo gameConfVo) {
+        this.mahjongs = Lists.newArrayList();
+        this.gameSeats = Maps.newHashMap();
+        if (gameConfVo == null) {
+            return this;
+        }
+        this.gameType = gameConfVo.getGameType();
+        this.difen = gameConfVo.getDifen();
+        this.zimo = gameConfVo.getZimo();
+        this.jiangdui = gameConfVo.isJiangdui();
+        this.huansanzhang = gameConfVo.isHuansanzhang();
+        this.zuidafanshu = gameConfVo.getZuidafanshu();
+        this.jushuxuanze = gameConfVo.getJushuxuanze();
+        this.dianganghua = gameConfVo.getDianganghua();
+        this.menqing = gameConfVo.isMenqing();
+        this.tiandihu = gameConfVo.isTiandihu();
+        return this;
+    }
 
 }

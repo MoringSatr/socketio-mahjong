@@ -79,11 +79,8 @@ public class RoomContext implements Storageable, Initializeable {
      */
     private void initUserLocation(List<RoomPlayerInfo> roomPlayerInfos, String roomId) {
         roomPlayerInfos.forEach(roomPlayer -> {
-            UserLocation userLocation = new UserLocation();
-            userLocation.setRoomId(roomId);
             long userId = roomPlayer.getUserId();
-            userLocation.setUserId(userId);
-            userLocation.setSeatIndex(roomPlayer.getSeatIndex());
+            UserLocation userLocation = new UserLocation(userId, roomId, roomPlayer.getSeatIndex());
             this.userLocationMap.put(userId, userLocation);
         });
     }
@@ -124,9 +121,9 @@ public class RoomContext implements Storageable, Initializeable {
 
     private Room fnCreate(String ip, int port, GameConfVo gameConfVo) {
         String roomId = generateRoomId();
-        RoomConfigInfo roomConfigInfo = new RoomConfigInfo();
+        RoomConfigInfo roomConfigInfo = new RoomConfigInfo().build(gameConfVo);
         if (this.creatingRoomIds.contains(roomId)) {
-            this.fnCreate(ip, port, null);
+            this.fnCreate(ip, port, gameConfVo);
         }
         RoomInfo roomInfo = new RoomInfo(roomId, ip, port, roomConfigInfo);
         Room room = this.initRoom(roomInfo);
@@ -167,6 +164,9 @@ public class RoomContext implements Storageable, Initializeable {
         Room room = this.getRoom(roomId);
         RoomPlayerInfo roomPlayerInfo = new RoomPlayerInfo(userId, userName, 100);
         room.enterRoom(roomPlayerInfo);
+        Seat seat = room.getSeatByUserId(userId);
+        UserLocation userLocation = new UserLocation(userId, roomId, seat.getSeatIndex());
+        this.userLocationMap.put(userId, userLocation);
     }
 
     public void setReady(long userId, boolean ready) {

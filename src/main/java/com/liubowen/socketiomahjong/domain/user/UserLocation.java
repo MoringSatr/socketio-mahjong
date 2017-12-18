@@ -1,6 +1,7 @@
 package com.liubowen.socketiomahjong.domain.user;
 
 import com.liubowen.socketiomahjong.common.Saveable;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -9,6 +10,7 @@ import lombok.Data;
  * @description
  */
 @Data
+@AllArgsConstructor
 public class UserLocation implements Saveable {
 
     private Long userId;

@@ -7,7 +7,6 @@ import com.liubowen.socketiomahjong.domain.room.RoomContext;
 import com.liubowen.socketiomahjong.domain.room.Seat;
 import com.liubowen.socketiomahjong.session.Session;
 import com.liubowen.socketiomahjong.session.SessionContext;
-import lombok.experimental.var;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -90,6 +89,12 @@ public class UserContext {
 
     public void bind(long userId, SocketIOClient client) {
         Session session = Session.get(client);
+        session.login(userId);
+        User user = this.get(userId);
+        user.bind(session.sessionId());
+    }
+
+    public void bind(long userId, Session session) {
         session.login(userId);
         User user = this.get(userId);
         user.bind(session.sessionId());

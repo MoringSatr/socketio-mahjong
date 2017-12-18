@@ -13,7 +13,7 @@ public interface GameService {
 
     ResultEntity createRoom(long userId, String sign, int gems, String gameConfVoString);
 
-    ResultEntity enterRoom(String serverId, String sign);
+    ResultEntity enterRoom(long userId, String name, String roomId, String sign);
 
     ResultEntity ping(String serverId, String sign);
 

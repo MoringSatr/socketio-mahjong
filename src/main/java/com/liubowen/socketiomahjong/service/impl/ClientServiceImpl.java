@@ -2,6 +2,7 @@ package com.liubowen.socketiomahjong.service.impl;
 
 import com.liubowen.socketiomahjong.common.ResultEntity;
 import com.liubowen.socketiomahjong.constant.Constant;
+import com.liubowen.socketiomahjong.dto.EnterInfoDto;
 import com.liubowen.socketiomahjong.entity.MessageInfo;
 import com.liubowen.socketiomahjong.entity.UserInfo;
 import com.liubowen.socketiomahjong.mapper.MessageInfoMapper;
@@ -124,17 +125,19 @@ public class ClientServiceImpl implements ClientService {
             return ResultEntityUtil.err("create failed.");
         }
         String roomId = createRoomResult.get("roomId").toString();
-        if (createRoomResult.ok() && StringUtils.isBlank(roomId)) {
+        if (createRoomResult.ok() && !StringUtils.isBlank(roomId)) {
             ResultEntity enterRoomResult = this.roomDomainService.enterRoom(userId, name, roomId);
-            Object enterInfo = enterRoomResult.get("enterInfo");
+            EnterInfoDto enterInfo = (EnterInfoDto) enterRoomResult.get("enterInfo");
             if (enterInfo != null) {
                 // TODO
                 ResultEntity result = ResultEntityUtil.ok();
-                result.add("roomid", roomId);
-                result.add("ip", ip);
-                result.add("port", 0);
-                result.add("token", "");
-                result.add("time", TimeUtil.currentTimeMillis());
+                result.add("roomid", enterInfo.getRoomId());
+                result.add("ip", enterInfo.getIp());
+                result.add("port", enterInfo.getPort());
+                result.add("token", enterInfo.getToken());
+                long time = TimeUtil.currentTimeMillis();
+                result.add("time", time);
+                result.add("sign", Md5Util.MD5(enterInfo.getRoomId() + enterInfo.getToken() + time + Constant.ROOM_PRI_KEY));
                 return result;
             } else {
                 return ResultEntityUtil.err("room doesn't exist.");

@@ -29,6 +29,8 @@ public class Seat {
 
     private int numChaJiao;
 
+    private String ip;
+
     public long getUserId() {
         if (this.roomPlayerInfo == null) {
             return 0;

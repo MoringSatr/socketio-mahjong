@@ -25,7 +25,7 @@ public class LoginVo {
     }
 
     public boolean isMd5() {
-        String md5 = Md5Util.MD5(this.roomId + this.token + this.token + Constant.ROOM_PRI_KEY);
+        String md5 = Md5Util.MD5(this.roomId + this.token + this.time + Constant.ROOM_PRI_KEY);
         return md5.equals(this.sign);
     }
 }

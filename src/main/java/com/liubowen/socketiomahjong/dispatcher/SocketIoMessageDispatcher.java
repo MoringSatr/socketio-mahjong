@@ -53,7 +53,7 @@ public class SocketIoMessageDispatcher {
     @OnEvent("login")
     public void login(SocketIOClient client, AckRequest request, LoginVo data) {
         Session session = Session.get(client);
-        log.info("【一个玩家登陆】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data.toString());
+        log.info("【一个玩家登陆】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data);
         this.loginBusinessHandler.login(session, data);
     }
 
@@ -61,7 +61,7 @@ public class SocketIoMessageDispatcher {
     @OnEvent("ready")
     public void ready(SocketIOClient client, AckRequest request, Object data) {
         Session session = Session.get(client);
-        log.info("【一个玩家准备】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data.toString());
+        log.info("【一个玩家准备】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data);
         this.gameBusinessHandler.ready(session, data);
     }
 
@@ -69,7 +69,7 @@ public class SocketIoMessageDispatcher {
     @OnEvent("huanpai")
     public void huanpai(SocketIOClient client, AckRequest request, Object data) {
         Session session = Session.get(client);
-        log.info("【一个玩家换牌】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data.toString());
+        log.info("【一个玩家换牌】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data);
         this.gameBusinessHandler.huanpai(session, data);
     }
 
@@ -77,7 +77,7 @@ public class SocketIoMessageDispatcher {
     @OnEvent("dingque")
     public void dingque(SocketIOClient client, AckRequest request, Object data) {
         Session session = Session.get(client);
-        log.info("【一个玩家定缺】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data.toString());
+        log.info("【一个玩家定缺】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data);
         this.gameBusinessHandler.dingque(session, data);
     }
 
@@ -85,7 +85,7 @@ public class SocketIoMessageDispatcher {
     @OnEvent("chupai")
     public void chupai(SocketIOClient client, AckRequest request, Object data) {
         Session session = Session.get(client);
-        log.info("【一个玩家出牌】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data.toString());
+        log.info("【一个玩家出牌】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data);
         this.gameBusinessHandler.chupai(session, data);
     }
 
@@ -93,7 +93,7 @@ public class SocketIoMessageDispatcher {
     @OnEvent("peng")
     public void peng(SocketIOClient client, AckRequest request, Object data) {
         Session session = Session.get(client);
-        log.info("【一个玩家碰】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data.toString());
+        log.info("【一个玩家碰】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data);
         this.gameBusinessHandler.peng(session, data);
     }
 
@@ -101,7 +101,7 @@ public class SocketIoMessageDispatcher {
     @OnEvent("gang")
     public void gang(SocketIOClient client, AckRequest request, Object data) {
         Session session = Session.get(client);
-        log.info("【一个玩家杠】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data.toString());
+        log.info("【一个玩家杠】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data);
         this.gameBusinessHandler.gang(session, data);
     }
 
@@ -109,7 +109,7 @@ public class SocketIoMessageDispatcher {
     @OnEvent("hu")
     public void hu(SocketIOClient client, AckRequest request, Object data) {
         Session session = Session.get(client);
-        log.info("【一个玩家胡】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data.toString());
+        log.info("【一个玩家胡】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data);
         this.gameBusinessHandler.hu(session, data);
     }
 
@@ -117,7 +117,7 @@ public class SocketIoMessageDispatcher {
     @OnEvent("guo")
     public void guo(SocketIOClient client, AckRequest request, Object data) {
         Session session = Session.get(client);
-        log.info("【一个玩家过  遇上胡，碰，杠的时候，可以选择过】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data.toString());
+        log.info("【一个玩家过  遇上胡，碰，杠的时候，可以选择过】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data);
         this.gameBusinessHandler.guo(session, data);
     }
 
@@ -125,7 +125,7 @@ public class SocketIoMessageDispatcher {
     @OnEvent("chat")
     public void chat(SocketIOClient client, AckRequest request, Object data) {
         Session session = Session.get(client);
-        log.info("【一个玩家聊天】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data.toString());
+        log.info("【一个玩家聊天】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data);
         this.gameBusinessHandler.chat(session, data);
     }
 
@@ -133,7 +133,7 @@ public class SocketIoMessageDispatcher {
     @OnEvent("quick_chat")
     public void quickChat(SocketIOClient client, AckRequest request, Object data) {
         Session session = Session.get(client);
-        log.info("【一个玩家快速聊天】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data.toString());
+        log.info("【一个玩家快速聊天】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data);
         this.gameBusinessHandler.quickChat(session, data);
     }
 
@@ -141,7 +141,7 @@ public class SocketIoMessageDispatcher {
     @OnEvent("voice_msg")
     public void voiceMsg(SocketIOClient client, AckRequest request, Object data) {
         Session session = Session.get(client);
-        log.info("【一个玩家语音聊天】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data.toString());
+        log.info("【一个玩家语音聊天】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data);
         this.gameBusinessHandler.voiceMsg(session, data);
     }
 
@@ -149,7 +149,7 @@ public class SocketIoMessageDispatcher {
     @OnEvent("emoji")
     public void emoji(SocketIOClient client, AckRequest request, Object data) {
         Session session = Session.get(client);
-        log.info("【一个玩家表情】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data.toString());
+        log.info("【一个玩家表情】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data);
         this.gameBusinessHandler.emoji(session, data);
     }
 
@@ -157,7 +157,7 @@ public class SocketIoMessageDispatcher {
     @OnEvent("exit")
     public void exit(SocketIOClient client, AckRequest request, Object data) {
         Session session = Session.get(client);
-        log.info("【一个玩家退出房间】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data.toString());
+        log.info("【一个玩家退出房间】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data);
         this.gameBusinessHandler.exit(session, data);
     }
 
@@ -165,7 +165,7 @@ public class SocketIoMessageDispatcher {
     @OnEvent("dispress")
     public void dispress(SocketIOClient client, AckRequest request, Object data) {
         Session session = Session.get(client);
-        log.info("【一个玩家解散房间】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data.toString());
+        log.info("【一个玩家解散房间】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data);
         this.gameBusinessHandler.dispress(session, data);
     }
 
@@ -173,7 +173,7 @@ public class SocketIoMessageDispatcher {
     @OnEvent("dissolve_request")
     public void dissolveRequest(SocketIOClient client, AckRequest request, Object data) {
         Session session = Session.get(client);
-        log.info("【一个玩家解散房间请求】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data.toString());
+        log.info("【一个玩家解散房间请求】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data);
         this.gameBusinessHandler.dissolveRequest(session, data);
     }
 
@@ -181,7 +181,7 @@ public class SocketIoMessageDispatcher {
     @OnEvent("dissolve_agree")
     public void dissolveAgree(SocketIOClient client, AckRequest request, Object data) {
         Session session = Session.get(client);
-        log.info("【一个玩家同意解散】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data.toString());
+        log.info("【一个玩家同意解散】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data);
         this.gameBusinessHandler.dissolveAgree(session, data);
     }
 
@@ -189,7 +189,7 @@ public class SocketIoMessageDispatcher {
     @OnEvent("dissolve_reject")
     public void dissolveReject(SocketIOClient client, AckRequest request, Object data) {
         Session session = Session.get(client);
-        log.info("【一个玩家拒绝解散】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data.toString());
+        log.info("【一个玩家拒绝解散】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data);
         this.gameBusinessHandler.dissolveReject(session, data);
     }
 
@@ -197,7 +197,7 @@ public class SocketIoMessageDispatcher {
     @OnEvent("game_ping")
     public void gamePing(SocketIOClient client, AckRequest request, Object data) {
         Session session = Session.get(client);
-        log.info("【一个玩家ping】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data.toString());
+        log.info("【一个玩家ping】sessionId : {}， userId : {} , data : {}", session.sessionId(), session.userId(), data);
         this.loginBusinessHandler.gamePing(session, data);
     }
 

@@ -64,4 +64,9 @@ public class Constant {
         return ip;
     }
 
+
+    public static class RoomConstant {
+        public static final String ROOM_SERVER_IP = "127.0.0.1";
+        public static final int ROOM_SERVER_PORT = 10086;
+    }
 }

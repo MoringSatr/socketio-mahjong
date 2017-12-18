@@ -2,7 +2,12 @@ package com.liubowen.socketiomahjong.service.impl;
 
 import com.liubowen.socketiomahjong.common.ResultEntity;
 import com.liubowen.socketiomahjong.constant.Constant;
+import com.liubowen.socketiomahjong.constant.Constant.RoomConstant;
+import com.liubowen.socketiomahjong.domain.room.Room;
 import com.liubowen.socketiomahjong.domain.room.RoomContext;
+import com.liubowen.socketiomahjong.domain.user.TokenContext;
+import com.liubowen.socketiomahjong.domain.user.UserToken;
+import com.liubowen.socketiomahjong.dto.EnterInfoDto;
 import com.liubowen.socketiomahjong.service.GameService;
 import com.liubowen.socketiomahjong.util.encode.Md5Util;
 import com.liubowen.socketiomahjong.util.result.ResultEntityUtil;
@@ -10,16 +15,21 @@ import com.liubowen.socketiomahjong.vo.GameConfVo;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * @author liubowen
  * @date 2017/12/18 16:24
  * @description
  */
+@Service("gameService")
 public class GameServiceImpl implements GameService {
 
     @Autowired
     private RoomContext roomContext;
+
+    @Autowired
+    private TokenContext tokenContext;
 
     @Override
     public ResultEntity getServerInfo(String serverId, String sign) {
@@ -36,13 +46,38 @@ public class GameServiceImpl implements GameService {
             return ResultEntityUtil.err("sign check failed.");
         }
         GameConfVo gameConfVo = (GameConfVo) JSONObject.toBean(JSONObject.fromObject(gameConfVoString), GameConfVo.class);
-        this.roomContext.createRoom(gameConfVo, gems, null, 0);
-        return null;
+
+        Room room = this.roomContext.createRoom(gameConfVo, gems, RoomConstant.ROOM_SERVER_IP, RoomConstant.ROOM_SERVER_PORT);
+        if (room == null) {
+            return ResultEntityUtil.err("create room failed.");
+        }
+        String roomId = room.getId();
+        ResultEntity resultEntity = ResultEntityUtil.ok();
+        resultEntity.add("roomId", roomId);
+        return resultEntity;
     }
 
     @Override
-    public ResultEntity enterRoom(String serverId, String sign) {
-        return null;
+    public ResultEntity enterRoom(long userId, String name, String roomId, String sign) {
+        if (userId == 0 || StringUtils.isBlank(roomId) || StringUtils.isBlank(sign)) {
+            return ResultEntityUtil.err("invalid parameters");
+        }
+        String md5 = Md5Util.MD5(userId + name + roomId + Constant.ROOM_PRI_KEY);
+        if (!sign.equals(md5)) {
+            return ResultEntityUtil.err("sign check failed.");
+        }
+        //  安排玩家坐下
+        this.roomContext.enterRoom(roomId, userId, name);
+        UserToken userToken = this.tokenContext.createToken(userId, 5000L);
+        if (userToken == null) {
+            return ResultEntityUtil.err("create userToken failed.");
+        }
+
+        String token = userToken.getToken();
+        ResultEntity resultEntity = ResultEntityUtil.ok();
+        EnterInfoDto enterInfoDto = new EnterInfoDto(roomId, RoomConstant.ROOM_SERVER_IP, RoomConstant.ROOM_SERVER_PORT, token);
+        resultEntity.add("enterInfo", enterInfoDto);
+        return resultEntity;
     }
 
     @Override

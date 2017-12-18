@@ -2,6 +2,7 @@ package com.liubowen.socketiomahjong.session;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import io.netty.util.AttributeKey;
+import lombok.Getter;
 import lombok.ToString;
 
 /**
@@ -17,6 +18,7 @@ public class Session {
     /**
      * 玩家客户端连接
      */
+    @Getter
     private SocketIOClient client;
 
     /**

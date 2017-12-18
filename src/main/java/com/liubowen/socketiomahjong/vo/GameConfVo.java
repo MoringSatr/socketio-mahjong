@@ -1,5 +1,6 @@
 package com.liubowen.socketiomahjong.vo;
 
+import com.liubowen.socketiomahjong.domain.game.GameType;
 import lombok.Data;
 
 /**
@@ -29,6 +30,10 @@ public class GameConfVo {
     private boolean menqing;
 
     private boolean tiandihu;
+
+    public GameType getGameType() {
+        return GameType.valueOf0(this.type);
+    }
 
 
 }
