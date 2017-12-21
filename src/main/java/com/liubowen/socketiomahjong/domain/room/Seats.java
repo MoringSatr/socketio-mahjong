@@ -77,4 +77,8 @@ public class Seats {
         seat.exitRoom();
         this.userIdWithSeatIndexMap.remove(userId);
     }
+
+    public boolean hasUser(long userId) {
+        return this.userIdWithSeatIndexMap.containsKey(userId);
+    }
 }

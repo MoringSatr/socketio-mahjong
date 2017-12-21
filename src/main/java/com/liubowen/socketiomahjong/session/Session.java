@@ -72,14 +72,19 @@ public class Session {
     /**
      * 发送消息
      */
-    public void send(String event, Object... message) {
+    public void send(String event, Object message) {
         this.client.sendEvent(event, message);
+    }
+
+    /***/
+    public void send(String event) {
+        this.client.sendEvent(event);
     }
 
     /**
      * 发送消息并且关闭连接
      */
-    public void sendAndClose(String event, Object... message) {
+    public void sendAndClose(String event, Object message) {
         this.send(event, message);
         this.client.disconnect();
     }

@@ -50,7 +50,7 @@ public class UserContext {
         return this.userMap.size();
     }
 
-    public void sendMessage(Long userId, String event, Object... message) {
+    public void sendMessage(Long userId, String event, Object message) {
         User user = this.get(userId);
         if (user == null) {
             return;
@@ -100,7 +100,7 @@ public class UserContext {
         user.bind(session.sessionId());
     }
 
-    public void broacastInRoom(Long senderId, boolean includingSender, String event, Object... message) {
+    public void broacastInRoom(Long senderId, boolean includingSender, String event, Object message) {
         String roomId = this.roomContext.getUserRoom(senderId);
         if (StringUtils.isBlank(roomId)) {
             return;

@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class Constant {
 
-    public static final String HALL_IP = "127.0.0.1";
+    public static final String HALL_IP = "192.168.3.2";
 
     public static final int HALL_CLIENT_PORT = 9009;
 
@@ -23,7 +23,7 @@ public class Constant {
 
     public static final String ROOM_PRI_KEY = "~!@#$(*&^%$&";
 
-    public static final String LOCAL_IP = "localhost";
+    public static final String LOCAL_IP = "192.168.3.2";
 
     public static final int[] DI_FEN = { 1, 2, 5 };
 
@@ -66,7 +66,7 @@ public class Constant {
 
 
     public static class RoomConstant {
-        public static final String ROOM_SERVER_IP = "127.0.0.1";
+        public static final String ROOM_SERVER_IP = "192.168.3.2";
         public static final int ROOM_SERVER_PORT = 10086;
     }
 }

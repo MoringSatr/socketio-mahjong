@@ -1,7 +1,11 @@
 package com.liubowen.socketiomahjong.handler;
 
+import com.liubowen.socketiomahjong.domain.room.RoomContext;
+import com.liubowen.socketiomahjong.domain.user.UserContext;
 import com.liubowen.socketiomahjong.session.Session;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,6 +16,12 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class GameBusinessHandler {
+
+    @Autowired
+    private RoomContext roomContext;
+
+    @Autowired
+    private UserContext userContext;
 
     /**
      * 准备
@@ -65,24 +75,65 @@ public class GameBusinessHandler {
      * 聊天
      */
     public void chat(Session session, Object data) {
+        if (!session.isLogin()) {
+            // 已经登陆过的就忽略
+            return;
+        }
+        long userId = session.userId();
+        JSONObject result = new JSONObject();
+        result.put("sender", userId);
+        result.put("content", data);
+        //通知其它客户端
+        this.userContext.broacastInRoom(userId, true, "chat_push", result);
     }
 
     /**
      * 快速聊天
      */
     public void quickChat(Session session, Object data) {
+        if (!session.isLogin()) {
+            // 已经登陆过的就忽略
+            return;
+        }
+        long userId = session.userId();
+        JSONObject result = new JSONObject();
+        result.put("sender", userId);
+        result.put("content", data);
+        //通知其它客户端
+        this.userContext.broacastInRoom(userId, true, "quick_chat_push", result);
     }
 
     /**
      * 语音聊天
      */
     public void voiceMsg(Session session, Object data) {
+        if (!session.isLogin()) {
+            // 已经登陆过的就忽略
+            return;
+        }
+        long userId = session.userId();
+        JSONObject result = new JSONObject();
+        result.put("sender", userId);
+        result.put("content", data);
+        //通知其它客户端
+        this.userContext.broacastInRoom(userId, true, "voice_msg_push", result);
+
     }
 
     /**
      * 表情
      */
     public void emoji(Session session, Object data) {
+        if (!session.isLogin()) {
+            // 已经登陆过的就忽略
+            return;
+        }
+        long userId = session.userId();
+        JSONObject result = new JSONObject();
+        result.put("sender", userId);
+        result.put("content", data);
+        //通知其它客户端
+        this.userContext.broacastInRoom(userId, true, "emoji_push", result);
     }
 
     /**

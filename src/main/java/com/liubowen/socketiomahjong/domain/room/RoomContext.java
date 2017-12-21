@@ -162,9 +162,16 @@ public class RoomContext implements Storageable, Initializeable {
 
     public void enterRoom(String roomId, long userId, String userName) {
         Room room = this.getRoom(roomId);
+        if(room == null) {
+            return;
+        }
         RoomPlayerInfo roomPlayerInfo = new RoomPlayerInfo(userId, userName, 100);
-        room.enterRoom(roomPlayerInfo);
-        Seat seat = room.getSeatByUserId(userId);
+        Seat seat = null;
+        if(!room.hasUser(userId)) {
+            room.enterRoom(roomPlayerInfo);
+        }
+        seat = room.getSeatByUserId(userId);
+
         UserLocation userLocation = new UserLocation(userId, roomId, seat.getSeatIndex());
         this.userLocationMap.put(userId, userLocation);
     }
@@ -227,5 +234,9 @@ public class RoomContext implements Storageable, Initializeable {
         }
         String roomId = userLocation.getRoomId();
         return this.getRoom(roomId);
+    }
+
+    public boolean isRoomExist(String roomId) {
+        return this.roomMap.containsKey(roomId);
     }
 }

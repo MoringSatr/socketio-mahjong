@@ -2,6 +2,7 @@ package com.liubowen.socketiomahjong.service.impl;
 
 import com.liubowen.socketiomahjong.common.ResultEntity;
 import com.liubowen.socketiomahjong.constant.Constant;
+import com.liubowen.socketiomahjong.domain.room.RoomContext;
 import com.liubowen.socketiomahjong.dto.EnterInfoDto;
 import com.liubowen.socketiomahjong.entity.MessageInfo;
 import com.liubowen.socketiomahjong.entity.UserInfo;
@@ -44,6 +45,9 @@ public class ClientServiceImpl implements ClientService {
     @Autowired
     private MessageInfoMapper messageInfoMapper;
 
+    @Autowired
+    private RoomContext roomContext;
+
     private boolean checkAccount(String account, String sign, String ip) {
         if (StringUtils.isEmpty(account) || StringUtils.isEmpty(sign)) {
             return false;
@@ -63,7 +67,7 @@ public class ClientServiceImpl implements ClientService {
         }
         UserInfo userInfo = this.userInfoMapper.findUserInfoByAccount(account);
         if (userInfo == null) {
-            return ResultEntityUtil.err("user not exist.");
+            return ResultEntityUtil.err(0, "user not exist.");
         }
         ResultEntity resultEntity = ResultEntityUtil.ok();
         resultEntity.add("account", userInfo.getAccount());
@@ -77,7 +81,8 @@ public class ClientServiceImpl implements ClientService {
         resultEntity.add("sex", userInfo.getSex());
         String roomId = userInfo.getRoomId();
         if (!StringUtils.isEmpty(roomId)) {
-            boolean isRoomExist = this.roomInfoMapper.isRoomExist(roomId);
+            boolean isRoomExist = this.roomContext.isRoomExist(roomId);
+//            boolean isRoomExist = this.roomInfoMapper.isRoomExist(roomId);
             if (isRoomExist) {
                 resultEntity.add("roomid", roomId);
             } else {
@@ -160,7 +165,25 @@ public class ClientServiceImpl implements ClientService {
         if (isRoomExist) {
             return ResultEntityUtil.err("user is playing in room now.");
         }
-        return ResultEntityUtil.ok();
+        if (!StringUtils.isBlank(roomId)) {
+            ResultEntity enterRoomResult = this.roomDomainService.enterRoom(userInfo.getUserId(), userInfo.getName(), roomId);
+            EnterInfoDto enterInfo = (EnterInfoDto) enterRoomResult.get("enterInfo");
+            if (enterInfo != null) {
+                // TODO
+                ResultEntity result = ResultEntityUtil.ok();
+                result.add("roomid", enterInfo.getRoomId());
+                result.add("ip", enterInfo.getIp());
+                result.add("port", enterInfo.getPort());
+                result.add("token", enterInfo.getToken());
+                long time = TimeUtil.currentTimeMillis();
+                result.add("time", time);
+                result.add("sign", Md5Util.MD5(enterInfo.getRoomId() + enterInfo.getToken() + time + Constant.ROOM_PRI_KEY));
+                return result;
+            } else {
+                return ResultEntityUtil.err("room doesn't exist.");
+            }
+        }
+        return ResultEntityUtil.err("roomId is blank.");
     }
 
     @Override

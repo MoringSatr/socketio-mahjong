@@ -116,4 +116,8 @@ public class Room implements Saveable {
         }
         return -1;
     }
+
+    public boolean hasUser(long userId) {
+        return this.seats.hasUser(userId);
+    }
 }
