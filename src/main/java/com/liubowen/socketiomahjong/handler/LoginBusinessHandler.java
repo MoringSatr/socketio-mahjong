@@ -58,24 +58,24 @@ public class LoginBusinessHandler {
         }
 
         String token = loginVo.getToken();
-        //检查token是否有效
+        // 检查token是否有效
         if (!this.tokenContext.isTokenValid(token)) {
             session.send("login_result", ResultEntityUtil.err(3, "token out of time.").result());
             return;
         }
 
-        //检查房间合法性
+        // 检查房间合法性
         long userId = this.tokenContext.getUserId(token);
-        String roomId = this.roomContext.getUserRoom(userId);
+        String roomId = this.roomContext.getUserRoomId(userId);
         UserInfo userInfo = this.userInfoMapper.selectByPrimaryKey(userId);
         User user = new User(userInfo);
         this.userContext.add(user);
         this.userContext.bind(userId, session);
 
-        //返回房间信息
+        // 返回房间信息
         Room roomInfo = this.roomContext.getRoom(roomId);
 
-//        int seatIndex = this.roomContext.getUserSeat(userId);
+        // int seatIndex = this.roomContext.getUserSeat(userId);
 
         Seat seat = roomInfo.getSeatByUserId(userId);
         SocketIOClient socketIOClient = session.getClient();
@@ -106,7 +106,7 @@ public class LoginBusinessHandler {
                 userData = seatJson;
             }
         }
-        //通知前端
+        // 通知前端
         ResultEntity resultEntity = ResultEntityUtil.ok();
         resultEntity.add("roomid", roomInfo.getId());
         resultEntity.add("conf", roomInfo.getConf());
@@ -115,34 +115,44 @@ public class LoginBusinessHandler {
 
         session.send("login_result", resultEntity.result());
 
-        //通知其它客户端
+        // 通知其它客户端
         this.userContext.broacastInRoom(userId, false, "new_user_comes_push", userData);
 
-
-        //玩家上线，强制设置为TRUE
+        // 玩家上线，强制设置为TRUE
         this.roomContext.setReady(userId, true);
 
         session.send("login_finished");
 
-//        if (roomInfo.dr != null) {
-//            var dr = roomInfo.dr;
-//            var ramaingTime = (dr.endTime - Date.now()) / 1000;
-//            var data = {
-//                    time:ramaingTime,
-//                    states:dr.states
-//				}
-//            userMgr.sendMsg(userId, 'dissolve_notice_push', data);
-//        }
-
-    }
-
-    /** 退出 */
-    public void logout(Session session) {
+        // TODO
+        // if (roomInfo.dr != null) {
+        // var dr = roomInfo.dr;
+        // var ramaingTime = (dr.endTime - Date.now()) / 1000;
+        // var data = {
+        // time:ramaingTime,
+        // states:dr.states
+        // }
+        // userMgr.sendMsg(userId, 'dissolve_notice_push', data);
+        // }
 
     }
 
     /** 断开链接 */
     public void disconnect(Session session) {
+        if (!session.isLogin()) {
+            // 已经登陆过的就忽略
+            return;
+        }
+        long userId = session.userId();
+
+        JSONObject resultData = new JSONObject();
+        resultData.put("userid", userId);
+        resultData.put("online", false);
+
+        // 通知其它客户端
+        this.userContext.broacastInRoom(userId, false, "'user_state_push'", resultData);
+
+        // 清除玩家的在线信息
+        this.userContext.remove(userId);
     }
 
     /** ping */

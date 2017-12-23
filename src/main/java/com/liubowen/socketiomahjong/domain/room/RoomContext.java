@@ -24,10 +24,10 @@ import java.util.concurrent.ConcurrentMap;
 @Component
 public class RoomContext implements Storageable, Initializeable {
 
-    private static int[] DI_FEN = new int[]{1, 2, 5};
-    private static int[] MAX_FAN = new int[]{3, 4, 5};
-    private static int[] JU_SHU = new int[]{4, 8};
-    private static int[] JU_SHU_COST = new int[]{2, 3};
+    private static int[] DI_FEN = new int[] { 1, 2, 5 };
+    private static int[] MAX_FAN = new int[] { 3, 4, 5 };
+    private static int[] JU_SHU = new int[] { 4, 8 };
+    private static int[] JU_SHU_COST = new int[] { 2, 3 };
 
     private ConcurrentMap<String, Room> roomMap = Maps.newConcurrentMap();
 
@@ -162,12 +162,12 @@ public class RoomContext implements Storageable, Initializeable {
 
     public void enterRoom(String roomId, long userId, String userName) {
         Room room = this.getRoom(roomId);
-        if(room == null) {
+        if (room == null) {
             return;
         }
         RoomPlayerInfo roomPlayerInfo = new RoomPlayerInfo(userId, userName, 100);
         Seat seat = null;
-        if(!room.hasUser(userId)) {
+        if (!room.hasUser(userId)) {
             room.enterRoom(roomPlayerInfo);
         }
         seat = room.getSeatByUserId(userId);
@@ -194,7 +194,7 @@ public class RoomContext implements Storageable, Initializeable {
         return seat.isReady();
     }
 
-    public String getUserRoom(long userId) {
+    public String getUserRoomId(long userId) {
         UserLocation userLocation = this.userLocationMap.get(userId);
         if (userLocation == null) {
             return null;
@@ -227,7 +227,7 @@ public class RoomContext implements Storageable, Initializeable {
         this.userLocationMap.remove(userId);
     }
 
-    private Room getRoomByUserId(long userId) {
+    public Room getRoomByUserId(long userId) {
         UserLocation userLocation = this.userLocationMap.get(userId);
         if (userLocation == null) {
             return null;

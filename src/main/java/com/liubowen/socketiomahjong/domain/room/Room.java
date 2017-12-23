@@ -42,6 +42,7 @@ public class Room implements Saveable {
     /**
      * 房间游戏信息
      */
+    @Getter
     private GameManager gameManager;
 
     public Room(RoomInfo roomInfo) {

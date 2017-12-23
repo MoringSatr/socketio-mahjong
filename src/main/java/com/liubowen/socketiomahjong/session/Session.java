@@ -90,6 +90,14 @@ public class Session {
     }
 
     /**
+     * 发送消息并且关闭连接
+     */
+    public void sendAndClose(String event) {
+        this.send(event);
+        this.client.disconnect();
+    }
+
+    /**
      * 绑定玩家session
      */
     private void bind(SocketIOClient client) {

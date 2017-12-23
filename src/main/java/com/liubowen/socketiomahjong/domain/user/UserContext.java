@@ -101,7 +101,7 @@ public class UserContext {
     }
 
     public void broacastInRoom(Long senderId, boolean includingSender, String event, Object message) {
-        String roomId = this.roomContext.getUserRoom(senderId);
+        String roomId = this.roomContext.getUserRoomId(senderId);
         if (StringUtils.isBlank(roomId)) {
             return;
         }
