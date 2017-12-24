@@ -62,6 +62,18 @@ public class UserContext {
         this.sessionContext.sendToSession(sessionId, event, message);
     }
 
+    public void sendMessage(Long userId, String event) {
+        User user = this.get(userId);
+        if (user == null) {
+            return;
+        }
+        if (!user.hasSession()) {
+            return;
+        }
+        String sessionId = user.getSessionId();
+        this.sessionContext.sendToSession(sessionId, event);
+    }
+
     public void kickAllInRoom(String roomId) {
         if (StringUtils.isBlank(roomId)) {
             return;

@@ -205,7 +205,7 @@ public class RoomContext implements Storageable, Initializeable {
     public int getUserSeat(long userId) {
         UserLocation userLocation = this.userLocationMap.get(userId);
         if (userLocation == null) {
-            return 0;
+            return -1;
         }
         return userLocation.getSeatIndex();
     }

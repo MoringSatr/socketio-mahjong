@@ -78,6 +78,7 @@ public class ClientServiceImpl implements ClientService {
         resultEntity.add("coins", userInfo.getCoins());
         resultEntity.add("gems", userInfo.getGems());
         resultEntity.add("ip", ip);
+        resultEntity.add("headImage", userInfo.getHeadImg());
         resultEntity.add("sex", userInfo.getSex());
         String roomId = userInfo.getRoomId();
         if (!StringUtils.isEmpty(roomId)) {

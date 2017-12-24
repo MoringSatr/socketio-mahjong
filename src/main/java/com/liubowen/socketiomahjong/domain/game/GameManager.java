@@ -9,6 +9,8 @@ import net.sf.json.JSONObject;
  */
 public abstract class GameManager {
 
+    protected MahjongUtils mahjongUtils = new MahjongUtils();
+
     public abstract void setReady(long userId);
 
     public abstract void chuPai(long userId, String pai);

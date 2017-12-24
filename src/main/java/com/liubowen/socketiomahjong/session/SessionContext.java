@@ -53,6 +53,13 @@ public class SessionContext {
         }
     }
 
+    /** 向某个session发送信息 */
+    public void sendToSession(String sessionId, String event) {
+        if(this.sessionConcurrentMap.containsKey(sessionId)) {
+            this.get(sessionId).send(event);
+        }
+    }
+
     /** 获取session */
     public Session get(SocketIOClient client) {
         String sessionId = client.getSessionId().toString();
