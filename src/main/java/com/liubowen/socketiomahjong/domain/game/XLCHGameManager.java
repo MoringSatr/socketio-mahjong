@@ -3,9 +3,12 @@ package com.liubowen.socketiomahjong.domain.game;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.liubowen.socketiomahjong.domain.room.Room;
 import com.liubowen.socketiomahjong.domain.room.RoomContext;
 import com.liubowen.socketiomahjong.domain.user.UserContext;
+import lombok.experimental.var;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -333,15 +336,20 @@ public class XLCHGameManager extends GameManager {
         return seatIndex;
     }
 
-//    public game getGameByUserID(long userId){
-//
-//        String roomId = roomContext.getUserRoomId(userId);
-//        if(roomId == null){
-//            return 0;
-//        }
-//        var game = games[roomId];
-//        return game;
-//    }
+    public MahjongGame getGameByUserID(long userId) {
+
+        String roomId = roomContext.getUserRoomId(userId);
+        if (StringUtils.isBlank(roomId)) {
+            return null;
+        }
+        Room room = roomContext.getRoom(roomId);
+        if (room == null) {
+            return null;
+        }
+        MahjongGame game = room.getMahjongGame();
+        var game = games[roomId];
+        return game;
+    }
 
 
     public boolean hasOperations(GameSeat seatData) {
@@ -383,49 +391,49 @@ public class XLCHGameManager extends GameManager {
             game.setTurn(nextSeat);
         }
     }
-//
-//    public void doUserMoPai(game){
-//        game.chuPai = -1;
-//        var turnSeat = game.gameSeats[game.turn];
-//        turnSeat.lastFangGangSeat = -1;
-//        turnSeat.guoHuFan = -1;
-//        var pai = mopai(game,game.turn);
-//        //牌摸完了，结束
-//        if(pai == -1){
-//            doGameOver(game,turnSeat.userId);
-//            return;
-//        }
-//        else{
-//            var numOfMJ = game.mahjongs.length - game.currentIndex;
-//            userMgr.broacastInRoom('mj_count_push',numOfMJ,turnSeat.userId,true);
-//        }
-//
-//        recordGameAction(game,game.turn,ACTION_MOPAI,pai);
-//
-//        //通知前端新摸的牌
-//        userMgr.sendMsg(turnSeat.userId,'game_mopai_push',pai);
-//        //检查是否可以暗杠或者胡
-//        //检查胡，直杠，弯杠
-//        if(!turnSeat.hued){
-//            checkCanAnGang(game,turnSeat);
-//        }
-//
-//        //如果未胡牌，或者摸起来的牌可以杠，才检查弯杠
-//        if(!turnSeat.hued || turnSeat.holds[turnSeat.holds.length-1] == pai){
-//            checkCanWanGang(game,turnSeat,pai);
-//        }
-//
-//
-//        //检查看是否可以和
-//        checkCanHu(game,turnSeat,pai);
-//
-//        //广播通知玩家出牌方
-//        turnSeat.canChuPai = true;
-//        userMgr.broacastInRoom('game_chupai_push',turnSeat.userId,turnSeat.userId,true);
-//
-//        //通知玩家做对应操作
-//        sendOperations(game,turnSeat,game.chuPai);
-//    }
+
+    public void doUserMoPai(MahjongGame game){
+        game.chuPai = -1;
+        var turnSeat = game.gameSeats[game.turn];
+        turnSeat.lastFangGangSeat = -1;
+        turnSeat.guoHuFan = -1;
+        var pai = mopai(game,game.turn);
+        //牌摸完了，结束
+        if(pai == -1){
+            doGameOver(game,turnSeat.userId);
+            return;
+        }
+        else{
+            var numOfMJ = game.mahjongs.length - game.currentIndex;
+            userMgr.broacastInRoom('mj_count_push',numOfMJ,turnSeat.userId,true);
+        }
+
+        recordGameAction(game,game.turn,ACTION_MOPAI,pai);
+
+        //通知前端新摸的牌
+        userMgr.sendMsg(turnSeat.userId,'game_mopai_push',pai);
+        //检查是否可以暗杠或者胡
+        //检查胡，直杠，弯杠
+        if(!turnSeat.hued){
+            checkCanAnGang(game,turnSeat);
+        }
+
+        //如果未胡牌，或者摸起来的牌可以杠，才检查弯杠
+        if(!turnSeat.hued || turnSeat.holds[turnSeat.holds.length-1] == pai){
+            checkCanWanGang(game,turnSeat,pai);
+        }
+
+
+        //检查看是否可以和
+        checkCanHu(game,turnSeat,pai);
+
+        //广播通知玩家出牌方
+        turnSeat.canChuPai = true;
+        userMgr.broacastInRoom('game_chupai_push',turnSeat.userId,turnSeat.userId,true);
+
+        //通知玩家做对应操作
+        sendOperations(game,turnSeat,game.chuPai);
+    }
 
     public boolean isSameType(int type, List<Integer> arr) {
         for (int i = 0; i < arr.size(); ++i) {
