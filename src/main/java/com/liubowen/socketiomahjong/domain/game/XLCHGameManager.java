@@ -5,8 +5,11 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.liubowen.socketiomahjong.domain.room.Room;
 import com.liubowen.socketiomahjong.domain.room.RoomContext;
+import com.liubowen.socketiomahjong.domain.room.Seat;
 import com.liubowen.socketiomahjong.domain.user.UserContext;
 import lombok.experimental.var;
+import net.sf.json.JSON;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 
@@ -14,6 +17,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author liubowen
@@ -347,7 +352,6 @@ public class XLCHGameManager extends GameManager {
             return null;
         }
         MahjongGame game = room.getMahjongGame();
-        var game = games[roomId];
         return game;
     }
 
@@ -392,85 +396,97 @@ public class XLCHGameManager extends GameManager {
         }
     }
 
-    public void doUserMoPai(MahjongGame game){
-        game.chuPai = -1;
-        var turnSeat = game.gameSeats[game.turn];
-        turnSeat.lastFangGangSeat = -1;
-        turnSeat.guoHuFan = -1;
-        var pai = mopai(game,game.turn);
+    public void doUserMoPai(MahjongGame game) {
+        game.setChuPai(-1);
+        GameSeat turnSeat = game.getGameSeat(game.getTurn());
+        turnSeat.setLastFangGangSeat(-1);
+        turnSeat.setGuoHuFan(-1);
+        long userId = turnSeat.getUserId();
+        int pai = this.mopai(game, game.getTurn());
         //牌摸完了，结束
-        if(pai == -1){
-            doGameOver(game,turnSeat.userId);
+        if (pai == -1) {
+            doGameOver(game, userId, false);
             return;
-        }
-        else{
-            var numOfMJ = game.mahjongs.length - game.currentIndex;
-            userMgr.broacastInRoom('mj_count_push',numOfMJ,turnSeat.userId,true);
+        } else {
+            int numOfMJ = game.getMahjongs().size() - game.getCurrentIndex();
+            this.userContext.broacastInRoom(userId, true, "mj_count_push", numOfMJ);
         }
 
-        recordGameAction(game,game.turn,ACTION_MOPAI,pai);
+        recordGameAction(game, game.getTurn(), ACTION_MOPAI, pai);
 
         //通知前端新摸的牌
-        userMgr.sendMsg(turnSeat.userId,'game_mopai_push',pai);
+        this.userContext.sendMessage(userId, "game_mopai_push", pai);
         //检查是否可以暗杠或者胡
         //检查胡，直杠，弯杠
-        if(!turnSeat.hued){
-            checkCanAnGang(game,turnSeat);
+        if (!turnSeat.isHued()) {
+            checkCanAnGang(game, turnSeat);
         }
 
         //如果未胡牌，或者摸起来的牌可以杠，才检查弯杠
-        if(!turnSeat.hued || turnSeat.holds[turnSeat.holds.length-1] == pai){
-            checkCanWanGang(game,turnSeat,pai);
+        if (!turnSeat.isHued() || turnSeat.getHolds().get(turnSeat.getHolds().size() - 1).getId() == pai) {
+            checkCanWanGang(game, turnSeat);
         }
 
 
         //检查看是否可以和
-        checkCanHu(game,turnSeat,pai);
+        checkCanHu(game, turnSeat, pai);
 
         //广播通知玩家出牌方
-        turnSeat.canChuPai = true;
-        userMgr.broacastInRoom('game_chupai_push',turnSeat.userId,turnSeat.userId,true);
+        turnSeat.setCanChuPai(true);
+        this.userContext.broacastInRoom(userId, true, "game_chupai_push", userId);
 
         //通知玩家做对应操作
-        sendOperations(game,turnSeat,game.chuPai);
+        sendOperations(game, turnSeat, game.getChuPai());
     }
 
-    public boolean isSameType(int type, List<Integer> arr) {
+    public boolean isSameType(MahjongType type, List<Card> arr) {
         for (int i = 0; i < arr.size(); ++i) {
-            int t = Card.getMJType(arr.get(i)).getType();
-            if (type != -1 && type != t) {
+            Card card = arr.get(i);
+            MahjongType t = card.getMahjongType();
+            if (type != null && type != t) {
                 return false;
             }
             type = t;
         }
         return true;
     }
-//
-//    public void isQingYiSe(gameSeatData){
-//        var type = getMJType(gameSeatData.holds[0]);
-//
-//        //检查手上的牌
-//        if(isSameType(type,gameSeatData.holds) == false){
-//            return false;
-//        }
-//
-//        //检查杠下的牌
-//        if(isSameType(type,gameSeatData.angangs) == false){
-//            return false;
-//        }
-//        if(isSameType(type,gameSeatData.wangangs) == false){
-//            return false;
-//        }
-//        if(isSameType(type,gameSeatData.diangangs) == false){
-//            return false;
-//        }
-//
-//        //检查碰牌
-//        if(isSameType(type,gameSeatData.pengs) == false){
-//            return false;
+
+//    public boolean isSameType(int type, List<Integer> arr) {
+//        for (int i = 0; i < arr.size(); ++i) {
+//            int t = Card.getMJType(arr.get(i)).getType();
+//            if (type != -1 && type != t) {
+//                return false;
+//            }
+//            type = t;
 //        }
 //        return true;
 //    }
+
+    public boolean isQingYiSe(GameSeat gameSeatData) {
+        List<Card> holds = gameSeatData.getHolds();
+        MahjongType type = Card.getMJType(holds.get(0).getId());
+        //检查手上的牌
+        if (!isSameType(type, holds)) {
+            return false;
+        }
+
+        //检查杠下的牌
+        if (!isSameType(type, gameSeatData.getGangPai()) == false) {
+            return false;
+        }
+        if (isSameType(type, gameSeatData.getWangangs()) == false) {
+            return false;
+        }
+        if (isSameType(type, gameSeatData.getDiangangs()) == false) {
+            return false;
+        }
+
+        //检查碰牌
+        if (isSameType(type, gameSeatData.getPengs()) == false) {
+            return false;
+        }
+        return true;
+    }
 
     public boolean isMenQing(GameSeat gameSeatData) {
         return (gameSeatData.getPengs().size() + gameSeatData.getWangangs().size() + gameSeatData.getDiangangs().size()) == 0;
@@ -896,144 +912,143 @@ public class XLCHGameManager extends GameManager {
 //            }
 //        }
 //    }
-//
-//    public void doGameOver(game,userId,forceEnd){
-//        var roomId = roomMgr.getUserRoom(userId);
-//        if(roomId == null){
-//            return;
-//        }
-//        var roomInfo = roomMgr.getRoom(roomId);
-//        if(roomInfo == null){
-//            return;
-//        }
-//
-//        var results = [];
-//        var dbresult = [0,0,0,0];
-//
-//        var fnNoticeResult = public void(isEnd){
-//            var endinfo = null;
-//            if(isEnd){
-//                endinfo = [];
-//                for(var i = 0; i < roomInfo.seats.length; ++i){
-//                    var rs = roomInfo.seats[i];
-//                    endinfo.push({
-//                            numzimo:rs.numZiMo,
-//                            numjiepao:rs.numJiePao,
-//                            numdianpao:rs.numDianPao,
-//                            numangang:rs.numAnGang,
-//                            numminggang:rs.numMingGang,
-//                            numchadajiao:rs.numChaJiao,
-//                });
-//                }
-//            }
-//
-//            userMgr.broacastInRoom('game_over_push',{results:results,endinfo:endinfo},userId,true);
-//            //如果局数已够，则进行整体结算，并关闭房间
-//            if(isEnd){
-//                setTimeout(public void(){
-//                    if(roomInfo.numOfGames > 1){
-//                        store_history(roomInfo);
-//                    }
-//                    userMgr.kickAllInRoom(roomId);
-//                    roomMgr.destroy(roomId);
-//                    db.archive_games(roomInfo.uuid);
-//                },1500);
-//            }
-//        }
-//
-//        if(game != null){
-//            if(!forceEnd){
-//                calculateResult(game,roomInfo);
-//            }
-//
-//            for(var i = 0; i < roomInfo.seats.length; ++i){
-//                var rs = roomInfo.seats[i];
-//                var sd = game.gameSeats[i];
-//
-//                rs.ready = false;
-//                rs.score += sd.score
-//                rs.numZiMo += sd.numZiMo;
-//                rs.numJiePao += sd.numJiePao;
-//                rs.numDianPao += sd.numDianPao;
-//                rs.numAnGang += sd.numAnGang;
-//                rs.numMingGang += sd.numMingGang;
-//                rs.numChaJiao += sd.numChaJiao;
-//
-//                var userRT = {
-//                        userId:sd.userId,
-//                        actions:[],
-//                pengs:sd.pengs,
-//                        wangangs:sd.wangangs,
-//                        diangangs:sd.diangangs,
-//                        angangs:sd.angangs,
-//                        holds:sd.holds,
-//                        score:sd.score,
-//                        totalscore:rs.score,
-//                        qingyise:sd.qingyise,
-//                        menqing:sd.isMenQing,
-//                        jingouhu:sd.isJinGouHu,
-//                        huinfo:sd.huInfo,
-//            }
-//
-//                for(var k in sd.actions){
-//                    userRT.actions[k] = {
-//                            type:sd.actions[k].type,
-//                };
-//                }
-//                results.push(userRT);
-//
-//
-//                dbresult[i] = sd.score;
-//                delete gameSeatsOfUsers[sd.userId];
-//            }
-//            delete games[roomId];
-//
-//            var old = roomInfo.nextButton;
-//            if(game.yipaoduoxiang >= 0){
-//                roomInfo.nextButton = game.yipaoduoxiang;
-//            }
-//            else if(game.firstHupai >= 0){
-//                roomInfo.nextButton = game.firstHupai;
-//            }
-//            else{
-//                roomInfo.nextButton = (game.turn + 1) % 4;
-//            }
-//
-//            if(old != roomInfo.nextButton){
-//                db.update_next_button(roomId,roomInfo.nextButton);
-//            }
-//        }
-//
-//        if(forceEnd || game == null){
-//            fnNoticeResult(true);
-//        }
-//        else{
-//            //保存游戏
-//            store_game(game,public void(ret){
-//                db.update_game_result(roomInfo.uuid,game.gameIndex,dbresult);
-//
-//                //记录玩家操作
-//                var str = JSON.stringify(game.actionList);
-//                db.update_game_action_records(roomInfo.uuid,game.gameIndex,str);
-//
-//                //保存游戏局数
-//                db.update_num_of_turns(roomId,roomInfo.numOfGames);
-//
-//                //如果是第一次，则扣除房卡
-//                if(roomInfo.numOfGames == 1){
-//                    var cost = 2;
-//                    if(roomInfo.conf.maxGames == 8){
-//                        cost = 3;
-//                    }
-//                    db.cost_gems(game.gameSeats[0].userId,cost);
-//                }
-//
-//                var isEnd = (roomInfo.numOfGames >= roomInfo.conf.maxGames);
-//                fnNoticeResult(isEnd);
-//            });
-//        }
-//    }
-//
+
+    private void fnNoticeResult(Room room, long userId, JSONArray results, boolean isEnd) {
+        JSONArray endinfo = new JSONArray();
+        if (isEnd) {
+            for (Seat seat : room.allSeat()) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("numzimo", seat.getNumZiMo());
+                jsonObject.put("numjiepao", seat.getNumJiePao());
+                jsonObject.put("numdianpao", seat.getNumDianPao());
+                jsonObject.put("numangang", seat.getNumAnGang());
+                jsonObject.put("numminggang", seat.getNumMingGang());
+                jsonObject.put("numchadajiao", seat.getNumChaJiao());
+                endinfo.add(jsonObject);
+            }
+        }
+
+        JSONObject resultData = new JSONObject();
+        resultData.put("results", results);
+        resultData.put("endinfo", endinfo);
+        this.userContext.broacastInRoom(userId, true, "game_over_push", resultData);
+        //如果局数已够，则进行整体结算，并关闭房间
+        if (isEnd) {
+            Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+                if (room.getNumOfGames() > 1) {
+                    store_history(room);
+                }
+                String roomId = room.getId();
+                userContext.kickAllInRoom(roomId);
+                roomContext.destroy(roomId);
+//                db.archive_games(roomInfo.uuid);
+            }, 1500, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    public void doGameOver(MahjongGame game, long userId, boolean forceEnd) {
+        String roomId = roomContext.getUserRoomId(userId);
+        if (StringUtils.isBlank(roomId)) {
+            return;
+        }
+        Room roomInfo = roomContext.getRoom(roomId);
+        if (roomInfo == null) {
+            return;
+        }
+
+        JSONArray results = new JSONArray();
+
+        int[] dbresult = new int[] {0, 0, 0, 0};
+
+
+        if (game != null) {
+            if (!forceEnd) {
+                calculateResult(game, roomInfo);
+            }
+
+            for (int i = 0; i < roomInfo.allSeat().size(); ++i) {
+                Seat rs = roomInfo.allSeat().get(i);
+                GameSeat sd = game.getGameSeat(i);
+                rs.setReady(false);
+                rs.setScore(rs.getScore() + sd.getScore());
+                rs.setNumZiMo(rs.getNumZiMo() + sd.getNumZiMo());
+                rs.setNumJiePao(rs.getNumJiePao() + sd.getNumJiePao());
+                rs.setNumDianPao(rs.getNumDianPao() + sd.getNumDianPao());
+                rs.setNumAnGang(rs.getNumAnGang() + sd.getNumAnGang());
+                rs.setNumMingGang(rs.getNumMingGang() + sd.getNumMingGang());
+                rs.setNumChaJiao(rs.getNumChaJiao() + sd.getNumChaJiao());
+
+                JSONObject userRT = new JSONObject();
+                userRT.put("userId", sd.getUserId());
+                userRT.put("actions", new JSONArray());
+                userRT.put("pengs", sd.getPengs());
+                userRT.put("wangangs", sd.getWangangs());
+                userRT.put("diangangs", sd.getDiangangs());
+                userRT.put("angangs", sd.getGangPai());
+                userRT.put("holds", sd.getHolds());
+                userRT.put("score", sd.getScore());
+                userRT.put("totalscore", rs.getScore());
+                userRT.put("qingyise", sd.isQingyise());
+                userRT.put("menqing", sd.isMenQing());
+                userRT.put("jingouhu", sd.isJinGouHu());
+                userRT.put("huinfo", sd.isHuInfo());
+
+                for (var k in sd.actions){
+                    userRT.actions[k] = {
+                            type:sd.actions[k].type,
+                };
+                }
+                results.push(userRT);
+
+
+                dbresult[i] = sd.score;
+                delete gameSeatsOfUsers[ sd.userId];
+            }
+            delete games[ roomId];
+
+            var old = roomInfo.nextButton;
+            if (game.yipaoduoxiang >= 0) {
+                roomInfo.nextButton = game.yipaoduoxiang;
+            } else if (game.firstHupai >= 0) {
+                roomInfo.nextButton = game.firstHupai;
+            } else {
+                roomInfo.nextButton = (game.turn + 1) % 4;
+            }
+
+            if (old != roomInfo.nextButton) {
+                db.update_next_button(roomId, roomInfo.nextButton);
+            }
+        }
+
+        if (forceEnd || game == null) {
+            fnNoticeResult(true);
+        } else {
+            //保存游戏
+            store_game(game,public void(ret) {
+                    db.update_game_result(roomInfo.uuid, game.gameIndex, dbresult);
+
+            //记录玩家操作
+            var str = JSON.stringify(game.actionList);
+            db.update_game_action_records(roomInfo.uuid, game.gameIndex, str);
+
+            //保存游戏局数
+            db.update_num_of_turns(roomId, roomInfo.numOfGames);
+
+            //如果是第一次，则扣除房卡
+            if (roomInfo.numOfGames == 1) {
+                var cost = 2;
+                if (roomInfo.conf.maxGames == 8) {
+                    cost = 3;
+                }
+                db.cost_gems(game.gameSeats[0].userId, cost);
+            }
+
+            var isEnd = (roomInfo.numOfGames >= roomInfo.conf.maxGames);
+            fnNoticeResult(isEnd);
+            });
+        }
+    }
+
 //    public void recordUserAction(MahjongGame game, GameSeat seatData,type,target){
 //        var d = {type:type,targets:[]};
 //        if(target != null){
@@ -1057,14 +1072,14 @@ public class XLCHGameManager extends GameManager {
 //        seatData.actions.push(d);
 //        return d;
 //    }
-//
-//    public void recordGameAction(game,si,action,pai){
-//        game.actionList.push(si);
-//        game.actionList.push(action);
-//        if(pai != null){
-//            game.actionList.push(pai);
-//        }
-//    }
+
+    public void recordGameAction(MahjongGame game, int si, int action, int pai) {
+        game.getActionList().add(si);
+        game.getActionList().add(action);
+        if (pai > 0) {
+            game.getActionList().add(pai);
+        }
+    }
 //
 //    exports.setReady = public void(userId,callback){
 //        var roomId = roomMgr.getUserRoom(userId);
@@ -1136,8 +1151,8 @@ public class XLCHGameManager extends GameManager {
 //            sendOperations(MahjongGame game, GameSeat seatData,game.chuPai);
 //        }
 //    }
-//
-//    public void store_single_history(userId,history){
+
+    public void store_single_history(long userId,JSONObject history){
 //        db.get_user_history(userId,public void(data){
 //            if(data == null){
 //                data = [];
@@ -1148,30 +1163,31 @@ public class XLCHGameManager extends GameManager {
 //            data.push(history);
 //            db.update_user_history(userId,data);
 //        });
-//    }
-//
-//    public void store_history(roomInfo){
-//        var seats = roomInfo.seats;
-//        var history = {
-//                uuid:roomInfo.uuid,
-//                id:roomInfo.id,
-//                time:roomInfo.createTime,
-//                seats:new Array(4)
-//    };
-//
-//        for(var i = 0; i < seats.length; ++i){
-//            var rs = seats[i];
-//            var hs = history.seats[i] = {};
-//            hs.userid = rs.userId;
+    }
+
+    public void store_history(Room roomInfo) {
+        List<Seat> seats = roomInfo.allSeat();
+        JSONObject history = new JSONObject();
+        history.put("uuid", roomInfo.getUuid());
+        history.put("id", roomInfo.getId());
+        history.put("time", roomInfo.getCreateTime());
+        history.put("seats", new JSONArray());
+        JSONArray seatArray = new JSONArray();
+        for (int i = 0; i < seats.size(); ++i) {
+            Seat rs = seats.get(i);
+            JSONObject hs = new JSONObject();
+            hs.put("userid", rs.getUserId());
+            hs.put("name", rs.getName());
+            hs.put("score", rs.getScore());
 //            hs.name = crypto.toBase64(rs.name);
-//            hs.score = rs.score;
-//        }
-//
-//        for(var i = 0; i < seats.length; ++i){
-//            var s = seats[i];
-//            store_single_history(s.userId,history);
-//        }
-//    }
+        }
+
+        for (int i = 0; i < seats.size(); ++i) {
+            Seat rs = seats.get(i);
+            store_single_history(rs.getUserId(), history);
+        }
+
+    }
 //
 //
 //    public void construct_game_base_info(game){

@@ -29,6 +29,8 @@ public class Seat {
 
     private int numChaJiao;
 
+    private int score;
+
     private String ip;
 
     public long getUserId() {
@@ -51,5 +53,9 @@ public class Seat {
         this.numAnGang = 0;
         this.numMingGang = 0;
         this.numChaJiao = 0;
+    }
+
+    public String getName() {
+        return this.roomPlayerInfo.getName();
     }
 }

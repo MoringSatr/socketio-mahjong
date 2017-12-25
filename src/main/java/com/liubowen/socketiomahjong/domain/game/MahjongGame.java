@@ -32,6 +32,10 @@ public class MahjongGame {
 
     private int turn;
 
+    private int chuPai;
+
+    private List<Integer> actionList;
+
     public GameSeat getGameSeat(int index) {
         return this.seats.get(index);
     }

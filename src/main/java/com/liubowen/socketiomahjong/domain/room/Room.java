@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class Room implements Saveable {
 
+    @Getter
     private String uuid;
 
     @Getter
@@ -24,8 +25,10 @@ public class Room implements Saveable {
     @Getter
     private int numOfGames;
 
+    @Getter
     private long createTime;
 
+    @Getter
     private int nextButton;
 
     /**
@@ -44,6 +47,9 @@ public class Room implements Saveable {
      */
     @Getter
     private GameManager gameManager;
+
+    @Getter
+    private MahjongGame mahjongGame;
 
     public Room(RoomInfo roomInfo) {
         this.uuid = roomInfo.getUuid() + "";

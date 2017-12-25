@@ -46,7 +46,6 @@ public class GameSeat {
     /** 听的牌 */
     private Map<Integer, TingCard> tingMap;
 
-
     /** 缺德牌（不要的牌） */
     private MahjongType que;
 
@@ -57,6 +56,35 @@ public class GameSeat {
     private boolean canHu;
 
     private int lastFangGangSeat;
+
+    private int guoHuFan;
+
+    private boolean hued;
+
+    private boolean canChuPai;
+
+    private int numZiMo;
+
+    private int numJiePao;
+
+    private int numDianPao;
+
+    private int numAnGang;
+
+    private int numMingGang;
+
+    private int numChaJiao;
+
+    private int score;
+
+    private boolean qingyise;
+
+    private boolean isMenQing;
+
+    private boolean isJinGouHu;
+
+    private boolean huInfo;
+
 
 
     public int getCardCount(int pai) {
