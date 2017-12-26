@@ -6,6 +6,7 @@ import com.liubowen.socketiomahjong.entity.RoomConfigInfo;
 import com.liubowen.socketiomahjong.entity.RoomInfo;
 import com.liubowen.socketiomahjong.entity.RoomPlayerInfo;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class Room implements Saveable {
     private long createTime;
 
     @Getter
+    @Setter
     private int nextButton;
 
     /**

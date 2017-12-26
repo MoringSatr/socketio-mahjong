@@ -85,6 +85,7 @@ public class GameSeat {
 
     private boolean huInfo;
 
+    private List<Integer> actions;
 
 
     public int getCardCount(int pai) {
