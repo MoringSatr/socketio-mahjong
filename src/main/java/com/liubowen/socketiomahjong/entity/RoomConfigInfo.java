@@ -74,6 +74,8 @@ public class RoomConfigInfo {
     @Column(name = "`tiandihu`")
     private boolean tiandihu;
 
+    private int maxGames;
+
 
     public RoomConfigInfo build(GameConfVo gameConfVo) {
         this.mahjongs = Lists.newArrayList();

@@ -3,6 +3,7 @@ package com.liubowen.socketiomahjong.domain.game;
 import com.google.common.collect.Lists;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.json.JSONObject;
 
 import java.util.List;
 import java.util.Map;
@@ -83,10 +84,15 @@ public class GameSeat {
 
     private boolean isJinGouHu;
 
-    private boolean huInfo;
-
     private List<Integer> actions;
 
+    private List<JSONObject> huInfo;
+
+    private List<Integer> folds;
+
+    private boolean zimo;
+
+    private List<Integer> huanpais;
 
     public int getCardCount(int pai) {
         int count = 0;

@@ -44,6 +44,8 @@ public class MahjongGame {
 
     private int baseScore;
 
+    private int state;
+
     public GameSeat getGameSeat(int index) {
         return this.seats.get(index);
     }
