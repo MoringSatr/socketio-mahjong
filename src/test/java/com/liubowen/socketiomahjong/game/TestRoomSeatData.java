@@ -1,7 +1,6 @@
 package com.liubowen.socketiomahjong.game;
 
 import com.liubowen.socketiomahjong.domain.game.MahjongType;
-import com.liubowen.socketiomahjong.domain.game.TingCard;
 
 import java.util.List;
 import java.util.Map;
@@ -11,7 +10,7 @@ import java.util.Map;
  * @date 2017/12/29 1:48
  * @description
  */
-public class TestGameSeat {
+public class TestRoomSeatData {
 
     /** 座位index */
     private int index;
@@ -20,29 +19,30 @@ public class TestGameSeat {
     private TestSeatPlayer seatPlayer;
 
     /** 手牌 */
-    private List<Integer> holds;
+    private List<Byte> holds;
 
     /** 打出的牌 */
-    private List<Integer> shoots;
-
-    /** 杠的牌 */
-    private List<Integer> gangPai;
+    private List<Byte> shoots;
 
     /** 吃的牌 */
+    private List<Byte> chis;
 
     /** 碰的牌 */
-    private List<Integer> pengs;
+    private List<Byte> pengs;
 
-    /** 的牌 */
-    private List<Integer> wangangs;
+    /** 杠的牌 */
+    private List<Byte> angangs;
 
-    /** 的牌 */
-    private List<Integer> diangangs;
+    /** 弯杠的牌的牌 */
+    private List<Byte> wangangs;
+
+    /** 点杠的牌的牌 */
+    private List<Byte> diangangs;
 
     /** 听的牌 */
-    private Map<Integer, TingCard> tingMap;
+    private Map<Integer, TestTingCard> tingMap;
 
-    /** 缺德牌（不要的牌） */
+    /** 缺的牌（不要的牌） */
     private MahjongType que;
 
 
@@ -69,4 +69,5 @@ public class TestGameSeat {
     /** 点炮次数 */
 
     /** 劫炮次数 */
+
 }

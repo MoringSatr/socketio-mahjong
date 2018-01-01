@@ -41,4 +41,6 @@ public class Card {
         return MahjongType.FENG;
     }
 
+
+
 }

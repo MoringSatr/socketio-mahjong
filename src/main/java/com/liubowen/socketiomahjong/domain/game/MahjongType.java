@@ -33,5 +33,19 @@ public enum MahjongType {
         return null;
     }
 
+    public static MahjongType getMJType(byte card) {
+        if (card >= 0 && card < 9) {
+            //筒
+            return TONG;
+        } else if (card >= 9 && card < 18) {
+            //条
+            return TIAO;
+        } else if (card >= 18 && card < 27) {
+            //万
+            return WAN;
+        }
+        return FENG;
+    }
+
 
 }

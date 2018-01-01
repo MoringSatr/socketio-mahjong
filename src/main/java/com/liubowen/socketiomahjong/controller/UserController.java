@@ -1,15 +1,18 @@
 package com.liubowen.socketiomahjong.controller;
 
-        import com.liubowen.socketiomahjong.entity.UserInfo;
-        import io.swagger.annotations.ApiImplicitParam;
-        import io.swagger.annotations.ApiImplicitParams;
-        import io.swagger.annotations.ApiOperation;
-        import org.springframework.web.bind.annotation.*;
+import com.liubowen.socketiomahjong.entity.UserInfo;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.*;
 
-        import java.util.*;
+import java.util.*;
 
 @RestController
-@RequestMapping(value = "/users")     // 通过这里配置使下面的映射都在/users下，可去除
+@RequestMapping(value = "/users")
+/**
+ * 通过这里配置使下面的映射都在/users下，可去除
+ * */
 public class UserController {
 
     static Map<Long, UserInfo> users = Collections.synchronizedMap(new HashMap<Long, UserInfo>());
