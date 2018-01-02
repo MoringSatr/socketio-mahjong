@@ -1,5 +1,7 @@
 package com.liubowen.socketiomahjong.game;
 
+import com.liubowen.socketiomahjong.domain.game.MahjongType;
+
 /**
  * @author liubowen
  * @date 2017/12/29 1:49
@@ -8,6 +10,19 @@ package com.liubowen.socketiomahjong.game;
 public class TestGameUtil {
 
     /** 根据牌的id判断牌是什么类型 */
+    public static MahjongType getMJType(byte pai) {
+        if (pai >= 0 && pai < 9) {
+            //筒
+            return MahjongType.TONG;
+        } else if (pai >= 9 && pai < 18) {
+            //条
+            return MahjongType.TIAO;
+        } else if (pai >= 18 && pai < 27) {
+            //万
+            return MahjongType.WAN;
+        }
+        return MahjongType.FENG;
+    }
 
     /** 判断玩家是否可以碰牌 */
 
