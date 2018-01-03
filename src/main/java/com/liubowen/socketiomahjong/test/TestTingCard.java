@@ -1,4 +1,4 @@
-package com.liubowen.socketiomahjong.game;
+package com.liubowen.socketiomahjong.test;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

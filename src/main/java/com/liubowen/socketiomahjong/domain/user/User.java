@@ -32,4 +32,8 @@ public class User {
     public boolean hasSession() {
         return this.sessionId != null && !"".equals(this.sessionId);
     }
+
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
 }

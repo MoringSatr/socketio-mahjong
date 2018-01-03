@@ -1,4 +1,4 @@
-package com.liubowen.socketiomahjong.game;
+package com.liubowen.socketiomahjong.test;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,5 +25,8 @@ public class TestSeatPlayer {
 
     /** 玩家积分 */
     private int score;
+
+    /** 玩家ip */
+    private String ip;
 
 }

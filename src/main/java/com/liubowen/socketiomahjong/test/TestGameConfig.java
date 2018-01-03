@@ -1,4 +1,4 @@
-package com.liubowen.socketiomahjong.game;
+package com.liubowen.socketiomahjong.test;
 
 /**
  * @author liubowen
@@ -6,4 +6,5 @@ package com.liubowen.socketiomahjong.game;
  * @description
  */
 public class TestGameConfig {
+
 }

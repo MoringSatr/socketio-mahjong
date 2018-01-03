@@ -1,4 +1,4 @@
-package com.liubowen.socketiomahjong.game;
+package com.liubowen.socketiomahjong.test;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -32,6 +32,14 @@ public class TestGame {
         this.testRoomSeatDataMap = Maps.newHashMap();
         this.turn = 0;
         this.pais = Lists.newArrayList();
+        initTestRoomSeatDatas();
+    }
+
+    private void initTestRoomSeatDatas() {
+        for (int i = 1; i <= 4; i++) {
+            TestRoomSeatData testRoomSeatData = new TestRoomSeatData(i);
+            this.addTestRoomSeatData(testRoomSeatData);
+        }
     }
 
     public TestRoomSeatData getTestRoomSeatData(int seatIndex) {
@@ -39,15 +47,35 @@ public class TestGame {
     }
 
     public TestRoomSeatData getTestRoomSeatDataByplayerId(long playerId) {
-        for (TestRoomSeatData testRoomSeatData : this.testRoomSeatDataMap.values())
+        for (TestRoomSeatData testRoomSeatData : this.testRoomSeatDataMap.values()) {
             if (testRoomSeatData.getPlayerId() == playerId) {
                 return testRoomSeatData;
             }
+        }
         return null;
     }
 
-    public void addTestRoomSeatData(TestRoomSeatData testRoomSeatData) {
+    private void addTestRoomSeatData(TestRoomSeatData testRoomSeatData) {
         this.testRoomSeatDataMap.put(testRoomSeatData.getIndex(), testRoomSeatData);
+    }
+
+    private int getFreeSeatIndex() {
+        for (TestRoomSeatData testRoomSeatData : this.allTestRoomSeatDatas()) {
+            if (testRoomSeatData.hasPlayer()) {
+                continue;
+            }
+            return testRoomSeatData.getIndex();
+        }
+        return -1;
+    }
+
+    public void addPlayer(TestSeatPlayer testSeatPlayer) {
+        int freeSeatIndex = this.getFreeSeatIndex();
+        if (freeSeatIndex == -1) {
+            return;
+        }
+        TestRoomSeatData testRoomSeatData = this.getTestRoomSeatData(freeSeatIndex);
+        testRoomSeatData.addPlayer(testSeatPlayer);
     }
 
     public void palyerReady(int seatIndex) {
@@ -150,12 +178,32 @@ public class TestGame {
 
     /** 换三张 */
     public void huansanzhang() {
+        TestRoomSeatData testRoomSeatData1 = this.testRoomSeatDataMap.get(1);
+        TestRoomSeatData testRoomSeatData2 = this.testRoomSeatDataMap.get(2);
+        TestRoomSeatData testRoomSeatData3 = this.testRoomSeatDataMap.get(3);
+        TestRoomSeatData testRoomSeatData4 = this.testRoomSeatDataMap.get(4);
+        List<Byte> oldHuansanzhangPais1 = testRoomSeatData1.getHuansanzhangRemovePais();
+        List<Byte> oldHuansanzhangPais2 = testRoomSeatData2.getHuansanzhangRemovePais();
+        List<Byte> oldHuansanzhangPais3 = testRoomSeatData3.getHuansanzhangRemovePais();
+        List<Byte> oldHuansanzhangPais4 = testRoomSeatData4.getHuansanzhangRemovePais();
         if (TestHuansanzhuangType.CLOCKWISE == this.testHuansanzhuangType) {
-
+            //  顺时针换牌   1 -> 2  2 -> 3  3 -> 4  4 -> 1
+            testRoomSeatData1.getHuansanzhangPais(oldHuansanzhangPais2);
+            testRoomSeatData2.getHuansanzhangPais(oldHuansanzhangPais3);
+            testRoomSeatData3.getHuansanzhangPais(oldHuansanzhangPais4);
+            testRoomSeatData4.getHuansanzhangPais(oldHuansanzhangPais1);
         } else if (TestHuansanzhuangType.COUNTERCLOCKWISE == this.testHuansanzhuangType) {
-
+            //  逆时针换牌   1 -> 4  2 -> 1  3 -> 2  4 -> 3
+            testRoomSeatData1.getHuansanzhangPais(oldHuansanzhangPais4);
+            testRoomSeatData2.getHuansanzhangPais(oldHuansanzhangPais1);
+            testRoomSeatData3.getHuansanzhangPais(oldHuansanzhangPais2);
+            testRoomSeatData4.getHuansanzhangPais(oldHuansanzhangPais3);
         } else {
-
+            //  对家互换    1 -> 3  2 -> 4  3 -> 1  4 -> 2
+            testRoomSeatData1.getHuansanzhangPais(oldHuansanzhangPais3);
+            testRoomSeatData2.getHuansanzhangPais(oldHuansanzhangPais4);
+            testRoomSeatData3.getHuansanzhangPais(oldHuansanzhangPais1);
+            testRoomSeatData4.getHuansanzhangPais(oldHuansanzhangPais2);
         }
     }
 
@@ -194,6 +242,18 @@ public class TestGame {
 //        });
 //        System.err.println("pais : " + Arrays.toString(cards.toArray()));
 
+    }
+
+    public List<TestRoomSeatData> allTestRoomSeatDatas() {
+        return Lists.newArrayList(this.testRoomSeatDataMap.values());
+    }
+
+    public void setReady(long userId, boolean ready) {
+        TestRoomSeatData testRoomSeatData = this.getTestRoomSeatDataByplayerId(userId);
+        if (testRoomSeatData == null) {
+            return;
+        }
+        testRoomSeatData.setReady(ready);
     }
 }
 

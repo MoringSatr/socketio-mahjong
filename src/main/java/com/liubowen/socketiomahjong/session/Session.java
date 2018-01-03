@@ -109,4 +109,8 @@ public class Session {
         this.client.disconnect();
     }
 
+    public String ip() {
+        return this.client.getHandshakeData().getAddress().getAddress().getHostAddress();
+    }
+
 }

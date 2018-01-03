@@ -1,16 +1,16 @@
 package com.liubowen.socketiomahjong.handler;
 
-import com.corundumstudio.socketio.SocketIOClient;
 import com.liubowen.socketiomahjong.common.ResultEntity;
-import com.liubowen.socketiomahjong.domain.room.Room;
 import com.liubowen.socketiomahjong.domain.room.RoomContext;
-import com.liubowen.socketiomahjong.domain.room.Seat;
 import com.liubowen.socketiomahjong.domain.user.TokenContext;
 import com.liubowen.socketiomahjong.domain.user.User;
 import com.liubowen.socketiomahjong.domain.user.UserContext;
 import com.liubowen.socketiomahjong.entity.UserInfo;
 import com.liubowen.socketiomahjong.mapper.UserInfoMapper;
 import com.liubowen.socketiomahjong.session.Session;
+import com.liubowen.socketiomahjong.test.TestRoom;
+import com.liubowen.socketiomahjong.test.TestRoomContext;
+import com.liubowen.socketiomahjong.test.TestRoomSeatData;
 import com.liubowen.socketiomahjong.util.result.ResultEntityUtil;
 import com.liubowen.socketiomahjong.vo.LoginVo;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +39,9 @@ public class LoginBusinessHandler {
 
     @Autowired
     private UserInfoMapper userInfoMapper;
+
+    @Autowired
+    private TestRoomContext testRoomContext;
 
     /** 登陆 */
     public void login(Session session, LoginVo loginVo) {
@@ -72,45 +75,40 @@ public class LoginBusinessHandler {
         this.userContext.add(user);
         this.userContext.bind(userId, session);
 
-        // 返回房间信息
-        Room roomInfo = this.roomContext.getRoom(roomId);
+        TestRoom room = this.testRoomContext.getTestRoom();
 
-        // int seatIndex = this.roomContext.getUserSeat(userId);
 
-        Seat seat = roomInfo.getSeatByUserId(userId);
-        SocketIOClient socketIOClient = session.getClient();
-        seat.setIp(socketIOClient.getHandshakeData().getAddress().getAddress().getHostAddress());
 
         JSONObject userData = null;
         JSONArray seats = new JSONArray();
-        for (Seat seat1 : roomInfo.allSeat()) {
+        for (TestRoomSeatData testRoomSeatData : room.allTestRoomSeatDatas()) {
             boolean online = false;
             int score = 0;
             String name = "";
-            if (seat1.hasRoomPlayer()) {
-                online = userContext.isOnline(seat1.getUserId());
-                score = seat1.getRoomPlayerInfo().getScore();
-                name = seat1.getRoomPlayerInfo().getName();
+            if (testRoomSeatData.hasPlayer()) {
+                online = userContext.isOnline(testRoomSeatData.getPlayerId());
+                score = testRoomSeatData.getScore();
+                name = testRoomSeatData.getNickname();
             }
             JSONObject seatJson = new JSONObject();
-            seatJson.put("userid", seat1.getUserId());
-            seatJson.put("ip", seat1.getIp());
+            seatJson.put("userid", testRoomSeatData.getPlayerId());
+            seatJson.put("ip", testRoomSeatData.getIp());
             seatJson.put("score", score);
             seatJson.put("name", name);
             seatJson.put("online", online);
-            seatJson.put("ready", seat1.isReady());
-            seatJson.put("seatindex", seat1.getSeatIndex());
+            seatJson.put("ready", testRoomSeatData.isReady());
+            seatJson.put("seatindex", testRoomSeatData.getIndex());
             seats.add(seatJson);
 
-            if (userId == seat1.getUserId()) {
+            if (userId == testRoomSeatData.getPlayerId()) {
                 userData = seatJson;
             }
         }
         // 通知前端
         ResultEntity resultEntity = ResultEntityUtil.ok();
-        resultEntity.add("roomid", roomInfo.getId());
-        resultEntity.add("conf", roomInfo.getConf());
-        resultEntity.add("numofgames", roomInfo.getNumOfGames());
+        resultEntity.add("roomid", room.getId());
+        resultEntity.add("conf", room.getConf());
+        resultEntity.add("numofgames", room.getNumOfGames());
         resultEntity.add("seats", seats);
 
         session.send("login_result", resultEntity.result());
@@ -119,9 +117,61 @@ public class LoginBusinessHandler {
         this.userContext.broacastInRoom(userId, false, "new_user_comes_push", userData);
 
         // 玩家上线，强制设置为TRUE
-        this.roomContext.setReady(userId, true);
+//        this.roomContext.setReady(userId, true);
+        room.setReady(userId, true);
 
         session.send("login_finished");
+
+
+        // 返回房间信息
+//        Room roomInfo = this.roomContext.getRoom(roomId);
+
+        // int seatIndex = this.roomContext.getUserSeat(userId);
+
+//        Seat seat = roomInfo.getSeatByUserId(userId);
+//        seat.setIp(session.ip());
+//
+//        JSONObject userData = null;
+//        JSONArray seats = new JSONArray();
+//        for (Seat seat1 : roomInfo.allSeat()) {
+//            boolean online = false;
+//            int score = 0;
+//            String name = "";
+//            if (seat1.hasRoomPlayer()) {
+//                online = userContext.isOnline(seat1.getUserId());
+//                score = seat1.getRoomPlayerInfo().getScore();
+//                name = seat1.getRoomPlayerInfo().getName();
+//            }
+//            JSONObject seatJson = new JSONObject();
+//            seatJson.put("userid", seat1.getUserId());
+//            seatJson.put("ip", seat1.getIp());
+//            seatJson.put("score", score);
+//            seatJson.put("name", name);
+//            seatJson.put("online", online);
+//            seatJson.put("ready", seat1.isReady());
+//            seatJson.put("seatindex", seat1.getSeatIndex());
+//            seats.add(seatJson);
+//
+//            if (userId == seat1.getUserId()) {
+//                userData = seatJson;
+//            }
+//        }
+//        // 通知前端
+//        ResultEntity resultEntity = ResultEntityUtil.ok();
+//        resultEntity.add("roomid", roomInfo.getId());
+//        resultEntity.add("conf", roomInfo.getConf());
+//        resultEntity.add("numofgames", roomInfo.getNumOfGames());
+//        resultEntity.add("seats", seats);
+//
+//        session.send("login_result", resultEntity.result());
+//
+//        // 通知其它客户端
+//        this.userContext.broacastInRoom(userId, false, "new_user_comes_push", userData);
+//
+//        // 玩家上线，强制设置为TRUE
+//        this.roomContext.setReady(userId, true);
+//
+//        session.send("login_finished");
 
         // TODO
         // if (roomInfo.dr != null) {

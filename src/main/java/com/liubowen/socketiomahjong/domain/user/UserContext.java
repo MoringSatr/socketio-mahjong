@@ -7,6 +7,9 @@ import com.liubowen.socketiomahjong.domain.room.RoomContext;
 import com.liubowen.socketiomahjong.domain.room.Seat;
 import com.liubowen.socketiomahjong.session.Session;
 import com.liubowen.socketiomahjong.session.SessionContext;
+import com.liubowen.socketiomahjong.test.TestRoom;
+import com.liubowen.socketiomahjong.test.TestRoomContext;
+import com.liubowen.socketiomahjong.test.TestRoomSeatData;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,6 +30,9 @@ public class UserContext {
 
     @Autowired
     private RoomContext roomContext;
+
+    @Autowired
+    private TestRoomContext testRoomContext;
 
     private ConcurrentMap<Long, User> userMap = Maps.newConcurrentMap();
 
@@ -113,24 +119,46 @@ public class UserContext {
     }
 
     public void broacastInRoom(Long senderId, boolean includingSender, String event, Object message) {
-        String roomId = this.roomContext.getUserRoomId(senderId);
-        if (StringUtils.isBlank(roomId)) {
-            return;
-        }
-        Room room = this.roomContext.getRoom(roomId);
+//        String roomId = this.roomContext.getUserRoomId(senderId);
+//        if (StringUtils.isBlank(roomId)) {
+//            return;
+//        }
+        TestRoom room = this.testRoomContext.getTestRoom();
+//        Room room = this.roomContext.getRoom(roomId);
         if (room == null) {
             return;
         }
-        List<Seat> seats = room.allSeat();
-        for (Seat seat : seats) {
-            if (seat.hasRoomPlayer()) {
-                long userId = seat.getUserId();
-                if (userId == senderId && !includingSender) {
-                    continue;
-                }
-                this.sendMessage(userId, event, message);
+        List<TestRoomSeatData> testRoomSeatData = room.allTestRoomSeatDatas();
+        testRoomSeatData.forEach(testRoomSeatData1 -> {
+            if(!testRoomSeatData1.hasPlayer()) {
+                return;
             }
-        }
+            if(testRoomSeatData1.getPlayerId() == senderId && !includingSender) {
+                return;
+            }
+            this.sendMessage(testRoomSeatData1.getPlayerId(), event, message);
+        });
     }
+
+//    public void broacastInRoom(Long senderId, boolean includingSender, String event, Object message) {
+//        String roomId = this.roomContext.getUserRoomId(senderId);
+//        if (StringUtils.isBlank(roomId)) {
+//            return;
+//        }
+//        Room room = this.roomContext.getRoom(roomId);
+//        if (room == null) {
+//            return;
+//        }
+//        List<Seat> seats = room.allSeat();
+//        for (Seat seat : seats) {
+//            if (seat.hasRoomPlayer()) {
+//                long userId = seat.getUserId();
+//                if (userId == senderId && !includingSender) {
+//                    continue;
+//                }
+//                this.sendMessage(userId, event, message);
+//            }
+//        }
+//    }
 
 }

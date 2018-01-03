@@ -1,4 +1,4 @@
-package com.liubowen.socketiomahjong.game;
+package com.liubowen.socketiomahjong.test;
 
 import com.liubowen.socketiomahjong.domain.game.MahjongType;
 

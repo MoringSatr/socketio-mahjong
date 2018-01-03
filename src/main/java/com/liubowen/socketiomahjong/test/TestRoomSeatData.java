@@ -1,4 +1,4 @@
-package com.liubowen.socketiomahjong.game;
+package com.liubowen.socketiomahjong.test;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -77,6 +77,22 @@ public class TestRoomSeatData {
         this.tingMap = Maps.newHashMap();
     }
 
+    public TestRoomSeatData(int index) {
+        this.index = index;
+        this.seatPlayer = null;
+        this.holds = Lists.newArrayList();
+        this.shoots = Lists.newArrayList();
+        this.pengs = Lists.newArrayList();
+        this.angangs = Lists.newArrayList();
+        this.wangangs = Lists.newArrayList();
+        this.diangangs = Lists.newArrayList();
+        this.tingMap = Maps.newHashMap();
+    }
+
+    public boolean hasPlayer() {
+        return this.seatPlayer != null;
+    }
+
     /** 摸牌 */
     public void mopai(byte pai) {
         this.holds.add(pai);
@@ -108,10 +124,16 @@ public class TestRoomSeatData {
     }
 
     public long getPlayerId() {
+        if (!this.hasPlayer()) {
+            return 0;
+        }
         return this.seatPlayer.getPlayerId();
     }
 
     public int getScore() {
+        if (!this.hasPlayer()) {
+            return 0;
+        }
         return this.seatPlayer.getScore();
     }
 
@@ -174,5 +196,16 @@ public class TestRoomSeatData {
 
     public void dingque(MahjongType mahjongType) {
         this.que = mahjongType;
+    }
+
+    public void addPlayer(TestSeatPlayer testSeatPlayer) {
+        this.seatPlayer = testSeatPlayer;
+    }
+
+    public String getIp() {
+        if (!this.hasPlayer()) {
+            return "192.168.3.2";
+        }
+        return this.seatPlayer.getIp();
     }
 }
